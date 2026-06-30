@@ -70,6 +70,7 @@ jobs:
               repo_id=repo_id,
               repo_type="space",
               folder_path="dist",
+              delete_patterns=["*"],
               commit_message="deploy: update dashboard build",
           )
           PY
