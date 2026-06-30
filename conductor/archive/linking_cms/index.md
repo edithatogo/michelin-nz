@@ -8,17 +8,17 @@ This track implements external integrations and automation routines. It sets up:
 
 ## Tasks
 
-### 1. External Map Deep Links
+### [x] Task: External Map Deep Links
 *   **Action:** Write interactive links on the NZ restaurant lists to route coordinates to Google Maps, Apple Maps, and OpenStreetMap.
 *   **Verification:** Confirm that clicked URLs match the target coordinates patterns.
 *   **Git Action:** Commit as `feat(ux): add external maps deep linking support`.
 
-### 2. Community Review CMS
+### [x] Task: Community Review CMS
 *   **Action:** Create a Markdown directory parser (`src/data/reviews/`) matching restaurant keys so bloggers can check in reviews via PR.
 *   **Verification:** Ensure compiled pages display community reviews when local files match the restaurant ID.
 *   **Git Action:** Commit as `feat(cms): implement PR-driven community review database`.
 
-### 3. CI/CD & Automation Workflow
+### [x] Task: CI/CD & Automation Workflow
 *   **Action:** Build `.github/workflows/data_sync.yml` to trigger daily scraper builds, compile, and deploy to Hugging Face Spaces.
 *   **Verification:** Ensure YAML actions parse cleanly.
 *   **Git Action:** Commit as `ci: add scheduled build sync automation`.
