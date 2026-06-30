@@ -8,6 +8,13 @@ node_modules/
 src/data/.cache/
 src/data/community_reviews.json
 
+# Python caching & coverage
+__pycache__/
+.pytest_cache/
+.coverage
+.hypothesis/
+.cache/
+
 # Observable Framework build output
 dist/
 
