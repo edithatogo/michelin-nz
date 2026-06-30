@@ -1,10 +1,12 @@
 cff-version: 1.2.0
 message: "If you use this software or data visualisations in your academic research, please cite it as follows."
 authors:
-  - name: "Michelin Star Per-Capita Project Contributors"
+  - family-names: "Mordaunt"
+    given-names: "Dylan A"
+    orcid: "https://orcid.org/0000-0002-5364-1650"
 title: "Michelin Star Per-Capita Dashboard"
 version: 1.0.0
-doi: "10.5281/zenodo.xxxxxx" # Replace with minted DOI after GitHub-Zenodo webhook trigger
+doi: "10.5281/zenodo.xxxxxx" # Minted dynamically upon Zenodo release publication
 date-released: 2026-06-30
 url: "https://github.com/edithatogo/michelin-nz"
 notes: |

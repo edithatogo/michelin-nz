@@ -1,0 +1,20 @@
+{
+  "title": "Michelin Star Per-Capita Dashboard",
+  "description": "A visually stunning dashboard for open-source gastronomy data science correlating Michelin-starred restaurants against GDP and population metrics.",
+  "creators": [
+    {
+      "name": "Mordaunt, Dylan A",
+      "orcid": "0000-0002-5364-1650",
+      "affiliation": "Open-source Gastronomy Data Science Contributor"
+    }
+  ],
+  "keywords": [
+    "gastronomy-data-science",
+    "michelin-star",
+    "gdp-per-capita",
+    "observable-framework",
+    "duckdb"
+  ],
+  "license": "MIT",
+  "access_right": "open"
+}

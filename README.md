@@ -11,9 +11,9 @@ pinned: false
 
 [![Verify Status](https://github.com/edithatogo/michelin-nz/actions/workflows/verify.yml/badge.svg)](https://github.com/edithatogo/michelin-nz/actions/workflows/verify.yml)
 [![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-yellow)](https://huggingface.co/spaces/edithatogo/michelin-nz)
+[![ORCID](https://img.shields.io/badge/ORCID-0000--0002--5364--1650-green.svg)](https://orcid.org/0000-0002-5364-1650)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/)
-[![Node Version](https://img.shields.io/badge/Node-20%2B-green)](https://nodejs.org/)
 
 A visually stunning, bleeding-edge dashboard for **open-source gastronomy data science** that visualizes the distribution of Michelin-starred restaurants globally, adjusted for population, GDP, and geographic location.
 
@@ -30,12 +30,21 @@ Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
 To cite this repository in academic or journalistic publications, please refer to [CITATION.cff](file:///Volumes/PortableSSD/GitHub/michelin-nz/CITATION.cff) or use:
 ```bibtex
 @software{michelin_nz_dashboard_2026,
-  author = {Michelin Star Per-Capita Contributors},
+  author = {Mordaunt, Dylan A},
   title = {Michelin Star Per-Capita Dashboard},
   url = {https://github.com/edithatogo/michelin-nz},
   year = {2026}
 }
 ```
+
+---
+
+## 🗄️ Zenodo Archive Linkage
+
+To activate permanent DOI minting for releases:
+1. Log into your account on [Zenodo](https://zenodo.org/) using your GitHub credentials.
+2. Go to your **GitHub Settings** panel on Zenodo and toggle the switch for `edithatogo/michelin-nz` to **On**.
+3. Create a new GitHub Release/Tag. Zenodo will automatically mint a permanent DOI using the metadata in `.zenodo.json`!
 
 ---
 
