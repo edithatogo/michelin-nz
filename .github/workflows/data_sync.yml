@@ -44,9 +44,9 @@ jobs:
 
       - name: Run Playwright Tests
         timeout-minutes: 3
-        run: |
-          npx playwright install chromium
-          npm run smoke:dist
+        env:
+          PLAYWRIGHT_BROWSER_CHANNEL: chrome
+        run: npm run smoke:dist
 
       - name: Deploy to Hugging Face Spaces
         if: ${{ env.HF_TOKEN != '' }}

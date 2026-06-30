@@ -56,6 +56,6 @@ jobs:
 
       - name: Run Static Site Smoke Tests
         timeout-minutes: 3
-        run: |
-          npx playwright install chromium
-          npm run smoke:dist
+        env:
+          PLAYWRIGHT_BROWSER_CHANNEL: chrome
+        run: npm run smoke:dist

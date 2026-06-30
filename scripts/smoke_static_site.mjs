@@ -14,6 +14,13 @@ const pages = [
 const port = Number(process.env.SMOKE_PORT || 4173);
 const baseUrl = `http://127.0.0.1:${port}`;
 let browser;
+const launchOptions = { headless: true };
+if (process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH) {
+  launchOptions.executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+}
+if (process.env.PLAYWRIGHT_BROWSER_CHANNEL) {
+  launchOptions.channel = process.env.PLAYWRIGHT_BROWSER_CHANNEL;
+}
 
 function waitForServer(url, timeoutMs = 30_000) {
   const started = Date.now();
@@ -62,7 +69,7 @@ server.stderr.on("data", (chunk) => {
 try {
   await waitForServer(`${baseUrl}/`);
 
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch(launchOptions);
   const page = await browser.newPage();
   page.setDefaultTimeout(15_000);
 
