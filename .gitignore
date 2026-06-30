@@ -1,6 +1,12 @@
 # Node dependencies
 node_modules/
 
+# Python virtual environment
+.venv/
+
+# Data loader local cache
+src/data/.cache/
+
 # Observable Framework build output
 dist/
 
