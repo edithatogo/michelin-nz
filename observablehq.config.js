@@ -15,6 +15,10 @@ export default {
       path: "/global-map"
     },
     {
+      name: "Chef Network",
+      path: "/network"
+    },
+    {
       name: "GDP & Stars",
       path: "/gdp-stars"
     },

@@ -13,8 +13,9 @@
 * **View Transitions API:** Implement native browser View Transitions so components visually morph and transition smoothly when switching tabs or views.
 * **Map Controls:** High-performance, zoomable global map (Deck.gl/Maplibre GL) allowing seamless transitions from world-level views down to city and restaurant level.
 * **GPU-Accelerated Spatial Hexbins:** Support 3D hexagonal density columns using Deck.gl to represent star concentrations in dense metropolitan hubs.
+* **GPU network visuals:** Interactive chef network connection maps powered by Cosmograph (cosmos.gl) showing influence hubs and connection links.
 * **Natural Language Query Interface:** Integration of a simple search box translating client requests to client-side SQL executing on DuckDB WASM via a lightweight LLM agent.
-* **Interactive Controls:** Sliders to filter records dynamically (e.g., filtering by GDP per capita range, population, or number of stars), instantly updating all visible charts.
+* **Interactive Controls:** Sliders to filter records dynamically (e.g., filtering by GDP per capita range, population, or number of stars), instantly updating all visible charts via SQLRooms/Mosaic linkages.
 * **Animations:** Playable timeline transition animations showing geographic expansion of the Michelin Guide globally over time.
 
 ## Data Interpretation, Methodology & Integrity
