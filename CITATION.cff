@@ -6,7 +6,6 @@ authors:
     orcid: "https://orcid.org/0000-0002-5364-1650"
 title: "Michelin Star Per-Capita Dashboard"
 version: 1.0.0
-doi: "10.5281/zenodo.xxxxxx" # Minted dynamically upon Zenodo release publication
 date-released: 2026-06-30
 url: "https://github.com/edithatogo/michelin-nz"
 notes: |

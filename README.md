@@ -41,10 +41,13 @@ To cite this repository in academic or journalistic publications, please refer t
 
 ## 🗄️ Zenodo Archive Linkage
 
+No Zenodo DOI has been minted yet. The repository includes `.zenodo.json` metadata so Zenodo can create a DOI after the GitHub integration is enabled.
+
 To activate permanent DOI minting for releases:
 1. Log into your account on [Zenodo](https://zenodo.org/) using your GitHub credentials.
 2. Go to your **GitHub Settings** panel on Zenodo and toggle the switch for `edithatogo/michelin-nz` to **On**.
-3. Create a new GitHub Release/Tag. Zenodo will automatically mint a permanent DOI using the metadata in `.zenodo.json`!
+3. Create a new GitHub Release/Tag. Zenodo will automatically mint a permanent DOI using the metadata in `.zenodo.json`.
+4. Replace this note with the minted DOI badge/link after Zenodo publishes the record.
 
 ---
 
