@@ -1,0 +1,69 @@
+# Michelin Star Per-Capita Dashboard
+
+A visually stunning, bleeding-edge data dashboard that visualizes the distribution of Michelin-starred restaurants globally, adjusted for population, GDP, and geographic location.
+
+Live Demo: [Hugging Face Spaces](https://huggingface.co/spaces/edithatogo/michelin-nz)  
+Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
+
+---
+
+## 🚀 Bleeding-Edge Architecture & Tech Stack
+
+- **Core Engine:** [Observable Framework](https://observablehq.com/framework/) - Static site generator optimized for data-dense dashboards.
+- **In-Browser Database:** [DuckDB WASM](https://duckdb.org/) - Executes analytical SQL queries directly on compressed `.parquet` tables inside the browser.
+- **WebGL Mapping:** [Deck.gl](https://deck.gl/) - Renders thousands of geographic coordinates at native GPU speeds.
+- **GPU Graph Networks:** [Cosmograph](https://cosmograph.app/) (cosmos.gl) - Renders culinary influence networks and chef lineages at 60fps.
+- **Scraper & Triangulation Pipeline:** Python loaders fetch demographics (World Bank/UN API) and scrape live restaurant data, saving compressed `.parquet` assets at build time.
+
+---
+
+## 🛠️ Installation & Local Development
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/edithatogo/michelin-nz.git
+   cd michelin-nz
+   ```
+
+2. **Setup Python Virtual Environment:**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install pandas requests beautifulsoup4 pyarrow
+   ```
+
+3. **Install Node Packages:**
+   ```bash
+   npm install
+   ```
+
+4. **Run Local Dev Server:**
+   ```bash
+   npm run dev
+   ```
+   Open `http://localhost:3000` to preview the dashboard.
+
+---
+
+## 📂 Project Structure
+
+- `src/` - Observable Framework markdown and styles.
+- `src/data/` - Build-time data loaders (`michelin.parquet.sh`, `michelin.py`).
+- `src/data/reviews/` - Community blog review submissions (`.json` format).
+- `conductor/` - Conductor project setup, specs, and workflow guidelines.
+
+---
+
+## 🤝 How to Contribute
+
+We welcome community contributions, particularly from food bloggers, critics, and data enthusiasts:
+1. Refer to [CONTRIBUTING.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/CONTRIBUTING.md) to submit pull requests for new restaurant listings or blog reviews.
+2. Read the methodology and data matching rules inside the dashboard overlays.
+
+---
+
+## 📄 License & Citation
+
+This project is open-source and licensed under the MIT License. See [LICENSE](file:///Volumes/PortableSSD/GitHub/michelin-nz/LICENSE) for details.
+
+To cite this project, please refer to [CITATION.cff](file:///Volumes/PortableSSD/GitHub/michelin-nz/CITATION.cff).
