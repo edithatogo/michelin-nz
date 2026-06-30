@@ -10,7 +10,7 @@
 * [Development Workflow](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/workflow.md)
 
 ## Active Tracks
-* **Track:** [Deep Linking, Community Review CMS & Automation](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/linking_cms/index.md) (`active`)
+* *All tracks completed.*
 * **All Tracks Index:** [Tracks Index](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/index.md)
 
 ## Code Style Guides

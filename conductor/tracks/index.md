@@ -10,7 +10,7 @@ This index tracks all developmental phases of the Michelin Star Per-Capita Dashb
 | `data_loader` | Data loader Pipeline & Scraping | `archived` | [data_loader/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/archive/data_loader/index.md) |
 | `core_viz` | Core Visualizations & DuckDB Integration | `archived` | [core_viz/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/archive/core_viz/index.md) |
 | `mapping` | WebGL Mapping & Spatial Binning | `archived` | [mapping/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/archive/mapping/index.md) |
-| `linking_cms` | Deep Linking, Community Review CMS & Automation | `active` | [linking_cms/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/linking_cms/index.md) |
+| `linking_cms` | Deep Linking, Community Review CMS & Automation | `archived` | [linking_cms/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/archive/linking_cms/index.md) |
 
 ## Development Rules
 * Each track must be developed in a dedicated Git feature branch (e.g. `feat/bootstrap`).
