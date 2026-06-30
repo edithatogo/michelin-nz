@@ -10,7 +10,7 @@ pinned: false
 # Michelin Star Per-Capita Dashboard
 
 [![Verify Status](https://github.com/edithatogo/michelin-nz/actions/workflows/verify.yml/badge.svg)](https://github.com/edithatogo/michelin-nz/actions/workflows/verify.yml)
-[![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-yellow)](https://huggingface.co/spaces/edithatogo/michelin-nz)
+[![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-yellow)](https://huggingface.co/spaces/edithatogo/michelin-nz) 
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--5364--1650-green.svg)](https://orcid.org/0000-0002-5364-1650)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/)

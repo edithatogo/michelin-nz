@@ -1,6 +1,8 @@
 name: Scheduled Data Sync & Deployment
 
 on:
+  push:
+    branches: [ main ]
   schedule:
     # Runs at 00:00 UTC daily
     - cron: '0 0 * * *'
