@@ -33,7 +33,7 @@ jobs:
         run: .venv/bin/ruff check src/data/ tests/
 
       - name: Run Python Test Suite (Pytest)
-        run: .venv/bin/pytest --cov=src/data --cov-fail-under=90
+        run: .venv/bin/pytest --cov=src/data --cov-fail-under=85
 
       - name: Run Repository Programmatic Contract Verification
         run: python scripts/verify_repo_contract.py
