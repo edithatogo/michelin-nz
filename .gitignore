@@ -6,6 +6,7 @@ node_modules/
 
 # Data loader local cache
 src/data/.cache/
+src/data/community_reviews.json
 
 # Observable Framework build output
 dist/

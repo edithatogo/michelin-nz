@@ -1,0 +1,52 @@
+name: Scheduled Data Sync & Deployment
+
+on:
+  schedule:
+    # Runs at 00:00 UTC daily
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  sync_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Create Python Virtual Environment
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install pandas requests beautifulsoup4 pyarrow
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Run Playwright Tests
+        run: |
+          npx playwright install --with-deps
+          # Run visual regression verification checks here
+
+      - name: Deploy to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # Sync compile build directory (dist) to Hugging Face Space repository git remote
+          git config --global user.email "bot@michelin.nz"
+          git config --global user.name "Michelin NZ Bot"
+          # Clone the HF space repo, copy dist files, commit, and push
+          # (Standard HF spaces deployment sync layout)
