@@ -12,7 +12,7 @@
     "prepare": "husky || true"
   },
   "dependencies": {
-    "@observablehq/framework": "^1.13.4"
+    "@observablehq/framework": "latest"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
