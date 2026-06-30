@@ -1,3 +1,12 @@
+---
+title: Michelin Star Per-Capita Dashboard
+emoji: 🍳
+colorFrom: yellow
+colorTo: blue
+sdk: static
+pinned: false
+---
+
 # Michelin Star Per-Capita Dashboard
 
 A visually stunning, bleeding-edge data dashboard that visualizes the distribution of Michelin-starred restaurants globally, adjusted for population, GDP, and geographic location.
