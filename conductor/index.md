@@ -10,7 +10,7 @@
 * [Development Workflow](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/workflow.md)
 
 ## Active Tracks
-* *None active. Ready to start Track 3 (core_viz).*
+* **Track:** [Core Visualizations & DuckDB Integration](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/core_viz/index.md) (`active`)
 * **All Tracks Index:** [Tracks Index](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/index.md)
 
 ## Code Style Guides
