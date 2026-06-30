@@ -45,8 +45,14 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Sync compile build directory (dist) to Hugging Face Space repository git remote
           git config --global user.email "bot@michelin.nz"
           git config --global user.name "Michelin NZ Bot"
-          # Clone the HF space repo, copy dist files, commit, and push
-          # (Standard HF spaces deployment sync layout)
+          git clone https://user:$HF_TOKEN@huggingface.co/spaces/edithatogo/michelin-nz hf-space
+          rm -rf hf-space/*
+          cp -r dist/* hf-space/
+          # Ensure README metadata frontmatter is at root of HF space
+          cp README.md hf-space/
+          cd hf-space
+          git add -A
+          git commit -m "deploy: update open-source gastronomy data science dashboard" || true
+          git push origin main || true
