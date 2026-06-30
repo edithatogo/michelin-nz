@@ -10,7 +10,7 @@
 * [Development Workflow](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/workflow.md)
 
 ## Active Tracks
-* *None active. Ready to start Track 4 (mapping).*
+* **Track:** [WebGL Mapping & Spatial Binning](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/mapping/index.md) (`active`)
 * **All Tracks Index:** [Tracks Index](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/index.md)
 
 ## Code Style Guides
