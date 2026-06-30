@@ -10,6 +10,7 @@ const pages = [
   { path: "/global-map", text: "Global Star Density Map", visualSelector: "svg" },
   { path: "/network", text: "Chef & Cuisine Influence Network", visualSelector: "svg" },
   { path: "/gdp-stars", text: "GDP & Stars Analysis", visualSelector: "svg" },
+  { path: "/pivot", text: "Pivot Results", visualSelector: "svg" },
   { path: "/sources", text: "Restaurant-Level Records" }
 ];
 

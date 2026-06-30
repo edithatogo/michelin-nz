@@ -23,6 +23,10 @@ export default {
       path: "/gdp-stars"
     },
     {
+      name: "Pivot Table",
+      path: "/pivot"
+    },
+    {
       name: "Data & Sources",
       path: "/sources"
     }

@@ -1,6 +1,8 @@
 # Data Sources & Triangulation Ledger
 
-This page documents the datasources, scraping rules, and validation ledger scores for this **open-source gastronomy data science** project.
+This page documents the datasource ledger and compiled records for the dashboard.
+
+The repository license covers dashboard code and project-authored documentation. World Bank indicators require World Bank attribution. Michelin Guide names, distinctions, ratings, text, branding, and related database rights are not open data; Michelin-derived fields here should be treated as limited reference facts rather than a redistributable Michelin database.
 
 ```js
 // Load dynamic database version indicators

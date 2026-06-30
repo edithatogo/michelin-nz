@@ -18,6 +18,11 @@ Welcome to the **Michelin Star Per-Capita Dashboard**. This project visualizes g
     <p>Interactive scatter plot and metrics correlating culinary intensity against national economic size.</p>
     <a href="./gdp-stars">Analyze Economic Data &rarr;</a>
   </div>
+  <div class="card">
+    <h2>Pivot Table</h2>
+    <p>Choose countries, row dimensions, measures, and aggregations to inspect the compiled metrics.</p>
+    <a href="./pivot">Open Pivot Table &rarr;</a>
+  </div>
 </div>
 
 ---
@@ -30,7 +35,7 @@ Welcome to the **Michelin Star Per-Capita Dashboard**. This project visualizes g
   <ul>
     <li><strong>Michelin Guide Coverage:</strong> The Michelin Guide is city/region-based and does not cover all territories within listed countries (e.g. only select metropolitan areas in the United States or Japan are graded). Comparison values represent guide density rather than absolute country capacity.</li>
     <li><strong>New Zealand "Hats" translation:</strong> New Zealand cuisine guides historically utilize the "Cuisine Good Food Awards" Hat indicators. For cross-border benchmarking on this dashboard, Hats are translated to Stars using an equivalence ratio of: <em>3 Hats = 3 Stars, 2 Hats = 2 Stars, 1 Hat = 1 Star</em>.</li>
-    <li><strong>Demographics Sources:</strong> Population and GDP stats are pulled dynamically from the official World Bank Open API data sets (2024 records).</li>
+    <li><strong>Demographics Sources:</strong> Population and GDP stats are pulled dynamically from official World Bank Open Data APIs and reused under the World Bank dataset terms.</li>
+    <li><strong>Michelin data status:</strong> Michelin Guide names, distinctions, ratings, text, branding, and related database rights are not open data. This site should treat any Michelin-derived values as limited reference facts requiring careful attribution and should not redistribute a comprehensive scraped Michelin database without permission.</li>
   </ul>
 </div>
-

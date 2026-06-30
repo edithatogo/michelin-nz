@@ -15,7 +15,7 @@ pinned: false
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/)
 
-A visually stunning, bleeding-edge dashboard for **open-source gastronomy data science** that visualizes the distribution of Michelin-starred restaurants globally, adjusted for population, GDP, and geographic location.
+A static Observable dashboard for gastronomy data analysis that visualizes selected Michelin Guide-style restaurant indicators alongside population, GDP, and geographic context.
 
 Live Demo: [Hugging Face Spaces](https://huggingface.co/spaces/edithatogo/michelin-nz)  
 Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
@@ -25,7 +25,9 @@ Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
 ## ⚖️ Data Ownership & Citation
 
 > [!IMPORTANT]
-> **Data Ownership Disclaimer:** The underlying restaurant names, coordinates, and star ratings are the intellectual property and copyright of **Manufacture Française des Pneumatiques Michelin (Michelin Group)**. This dashboard is an academic/visual data project using public and scraped records for educational benchmarking.
+> **Data Ownership Disclaimer:** Michelin Guide names, distinctions, ratings, text, branding, and related database rights are owned by **Manufacture Française des Pneumatiques Michelin (Michelin Group)** or its licensors. This repository's MIT license applies to the dashboard code only; it does not license Michelin-derived data. Do not redistribute a comprehensive scraped Michelin database from this repository without confirming permission or another valid legal basis.
+>
+> World Bank indicators are reused from World Bank Open Data and require source attribution under the World Bank dataset terms.
 
 To cite this repository in academic or journalistic publications, please refer to [CITATION.cff](file:///Volumes/PortableSSD/GitHub/michelin-nz/CITATION.cff) or use:
 ```bibtex
@@ -53,13 +55,12 @@ See [Release Checklist](docs/release-checklist.md) before publishing DOI-bearing
 
 ---
 
-## 🚀 Bleeding-Edge Architecture & Tech Stack
+## 🚀 Architecture & Tech Stack
 
 - **Core Engine:** [Observable Framework](https://observablehq.com/framework/) - Static site generator optimized for data-dense dashboards.
-- **In-Browser Database:** [DuckDB WASM](https://duckdb.org/) - Executes analytical SQL queries directly on compressed `.parquet` tables inside the browser.
-- **WebGL Mapping:** [Deck.gl](https://deck.gl/) - Renders thousands of geographic coordinates at native GPU speeds.
-- **GPU Graph Networks:** [Cosmograph](https://cosmograph.app/) (cosmos.gl) - Renders culinary influence networks and chef lineages at 60fps.
-- **Scraper & Triangulation Pipeline:** Python loaders fetch demographics (World Bank/UN API) and scrape live restaurant data, saving compressed `.parquet` assets at build time.
+- **Visualization:** [Observable Plot](https://observablehq.com/plot/) renders deterministic SVG charts that are covered by headless deployment smoke tests.
+- **Build-Time Data Pipeline:** Python loaders compile selected restaurant records, World Bank demographics, and GDP indicators into JSON and Parquet assets at build time.
+- **Interactive Analysis:** Observable Inputs provide country filters, measure selectors, aggregation controls, and data tables.
 
 ---
 
