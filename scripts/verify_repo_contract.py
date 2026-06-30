@@ -56,6 +56,13 @@ def run_linters():
         print(res.stdout)
         return False
     print("✅ Ruff linting checks passed.")
+    
+    print("🔍 Running basedpyright typechecker checks...")
+    res_pr = subprocess.run(["npx", "basedpyright", "src/data/"], capture_output=True, text=True)
+    if res_pr.returncode != 0:
+        print("⚠️ basedpyright checking warnings found (continuing)...")
+    else:
+        print("✅ basedpyright typechecking passed.")
     return True
 
 def verify_external_deployments():

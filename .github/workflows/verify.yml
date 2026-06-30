@@ -32,9 +32,6 @@ jobs:
       - name: Run Python Linter (Ruff)
         run: .venv/bin/ruff check src/data/ tests/
 
-      - name: Run Python Typechecker (basedpyright)
-        run: .venv/bin/basedpyright src/data/
-
       - name: Run Python Test Suite (Pytest)
         run: .venv/bin/pytest --cov=src/data --cov-fail-under=90
 
@@ -43,6 +40,9 @@ jobs:
 
       - name: Install Node Dependencies
         run: npm ci
+
+      - name: Run Python Typechecker (basedpyright)
+        run: npx basedpyright src/data/
 
       - name: Run Javascript Linter (ESLint)
         run: npm run lint
