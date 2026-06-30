@@ -9,10 +9,29 @@ pinned: false
 
 # Michelin Star Per-Capita Dashboard
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxx)
+
 A visually stunning, bleeding-edge data dashboard that visualizes the distribution of Michelin-starred restaurants globally, adjusted for population, GDP, and geographic location.
 
 Live Demo: [Hugging Face Spaces](https://huggingface.co/spaces/edithatogo/michelin-nz)  
 Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
+
+---
+
+## ⚖️ Data Ownership & Citation
+
+> [!IMPORTANT]
+> **Data Ownership Disclaimer:** The underlying restaurant names, coordinates, and star ratings are the intellectual property and copyright of **Manufacture Française des Pneumatiques Michelin (Michelin Group)**. This dashboard is an academic/visual data project using public and scraped records for educational benchmarking.
+
+To cite this repository in academic or journalistic publications, please refer to [CITATION.cff](file:///Volumes/PortableSSD/GitHub/michelin-nz/CITATION.cff) or use:
+```bibtex
+@software{michelin_nz_dashboard_2026,
+  author = {Michelin Star Per-Capita Contributors},
+  title = {Michelin Star Per-Capita Dashboard},
+  url = {https://github.com/edithatogo/michelin-nz},
+  year = {2026}
+}
+```
 
 ---
 

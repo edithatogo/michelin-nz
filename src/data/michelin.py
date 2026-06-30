@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import io
+import json
 import os
 import sys
 
@@ -63,50 +64,28 @@ def get_nz_scraped_restaurants():
                 continue
 
     # If scraper returned nothing (due to API changes or geo-blocks),
-    # provide fallback curated list of top NZ eateries
+    # provide fallback curated list of top NZ eateries from archived baseline
     if not restaurants:
-        restaurants = [
-            {
-                "name": "Hiakai",
-                "location": "Wellington",
-                "country": "NZL",
-                "stars": 3,
-                "lat": -41.3015,
-                "lng": 174.7797,
-            },
-            {
-                "name": "The Grove",
-                "location": "Auckland",
-                "country": "NZL",
-                "stars": 2,
-                "lat": -36.8485,
-                "lng": 174.7633,
-            },
-            {
-                "name": "Amisfield",
-                "location": "Queenstown",
-                "country": "NZL",
-                "stars": 3,
-                "lat": -44.9816,
-                "lng": 168.8142,
-            },
-            {
-                "name": "Logan Brown",
-                "location": "Wellington",
-                "country": "NZL",
-                "stars": 1,
-                "lat": -41.2924,
-                "lng": 174.7745,
-            },
-            {
-                "name": "Sidart",
-                "location": "Auckland",
-                "country": "NZL",
-                "stars": 2,
-                "lat": -36.8587,
-                "lng": 174.7431,
-            },
-        ]
+        archive_path = os.path.join(
+            os.path.dirname(__file__),
+            "archive",
+            "michelin_scraped_nz_baseline.json",
+        )
+        try:
+            with open(archive_path, encoding="utf-8") as f:
+                restaurants = json.load(f)
+        except Exception as e:
+            sys.stderr.write(f"Warning: Failed to load NZ archive: {e}\n")
+            restaurants = [
+                {
+                    "name": "Hiakai",
+                    "location": "Wellington",
+                    "country": "NZL",
+                    "stars": 3,
+                    "lat": -41.3015,
+                    "lng": 174.7797,
+                },
+            ]
     return pd.DataFrame(restaurants)
 
 
@@ -147,23 +126,28 @@ def get_world_bank_data():
     except Exception as e:
         sys.stderr.write(f"Error fetching World Bank GDP data: {e}\n")
 
-    # If API requests fail, fall back to robust defaults for key Michelin countries
+    # If API requests fail, fall back to robust defaults from archived snapshots
     if not pop_data:
-        pop_data = [
-            {"country": "NZL", "country_name": "New Zealand", "population": 5228100},
-            {"country": "FRA", "country_name": "France", "population": 68070000},
-            {"country": "JPN", "country_name": "Japan", "population": 125100000},
-            {"country": "USA", "country_name": "United States", "population": 333200000},
-            {"country": "CHE", "country_name": "Switzerland", "population": 8800000},
-        ]
+        pop_archive = os.path.join(
+            os.path.dirname(__file__),
+            "archive",
+            "world_bank_population_2024.json",
+        )
+        try:
+            with open(pop_archive, encoding="utf-8") as f:
+                pop_data = json.load(f)
+        except Exception as e:
+            sys.stderr.write(f"Warning: Failed to load pop archive: {e}\n")
+            pop_data = [{"country": "NZL", "country_name": "New Zealand", "population": 5228100}]
+
     if not gdp_data:
-        gdp_data = [
-            {"country": "NZL", "gdp": 253000000000},
-            {"country": "FRA", "gdp": 2780000000000},
-            {"country": "JPN", "gdp": 4200000000000},
-            {"country": "USA", "gdp": 25400000000000},
-            {"country": "CHE", "gdp": 800000000000},
-        ]
+        gdp_archive = os.path.join(os.path.dirname(__file__), "archive", "world_bank_gdp_2024.json")
+        try:
+            with open(gdp_archive, encoding="utf-8") as f:
+                gdp_data = json.load(f)
+        except Exception as e:
+            sys.stderr.write(f"Warning: Failed to load GDP archive: {e}\n")
+            gdp_data = [{"country": "NZL", "gdp": 253000000000}]
 
     df_pop = pd.DataFrame(pop_data)
     df_gdp = pd.DataFrame(gdp_data)
