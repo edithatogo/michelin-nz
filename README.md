@@ -9,9 +9,13 @@ pinned: false
 
 # Michelin Star Per-Capita Dashboard
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxx)
+[![Verify Status](https://github.com/edithatogo/michelin-nz/actions/workflows/verify.yml/badge.svg)](https://github.com/edithatogo/michelin-nz/actions/workflows/verify.yml)
+[![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-yellow)](https://huggingface.co/spaces/edithatogo/michelin-nz)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/)
+[![Node Version](https://img.shields.io/badge/Node-20%2B-green)](https://nodejs.org/)
 
-A visually stunning, bleeding-edge data dashboard that visualizes the distribution of Michelin-starred restaurants globally, adjusted for population, GDP, and geographic location.
+A visually stunning, bleeding-edge dashboard for **open-source gastronomy data science** that visualizes the distribution of Michelin-starred restaurants globally, adjusted for population, GDP, and geographic location.
 
 Live Demo: [Hugging Face Spaces](https://huggingface.co/spaces/edithatogo/michelin-nz)  
 Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
