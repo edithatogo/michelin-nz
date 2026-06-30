@@ -8,6 +8,9 @@ import polars as pl
 import requests
 from bs4 import BeautifulSoup
 
+COUNTRY_SCALE = 100000
+GDP_SCALE = 10000000000
+
 # Define cache dir
 CACHE_DIR = os.path.join(os.path.dirname(__file__), ".cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
@@ -157,88 +160,118 @@ def get_world_bank_data() -> pl.DataFrame:
     return df_pop.join(df_gdp, on="country", how="full")
 
 
-def main() -> None:
-    # 1. Fetch Michelin Star records
+def get_global_baseline_restaurants() -> pl.DataFrame:
+    """Returns curated global comparison restaurants for the dashboard baseline."""
+    return pl.DataFrame(
+        [
+            {
+                "id": "lambroisie",
+                "name": "L'Ambroisie",
+                "location": "Paris",
+                "country": "FRA",
+                "stars": 3,
+                "lat": 48.8553,
+                "lng": 2.3655,
+                "type": "French haute cuisine",
+            },
+            {
+                "id": "plenitude",
+                "name": "Plénitude",
+                "location": "Paris",
+                "country": "FRA",
+                "stars": 3,
+                "lat": 48.8584,
+                "lng": 2.3412,
+                "type": "Contemporary French",
+            },
+            {
+                "id": "sukiyabashi-jiro",
+                "name": "Sukiyabashi Jiro",
+                "location": "Tokyo",
+                "country": "JPN",
+                "stars": 3,
+                "lat": 35.6722,
+                "lng": 139.7628,
+                "type": "Sushi",
+            },
+            {
+                "id": "joel-robuchon",
+                "name": "Joel Robuchon",
+                "location": "Tokyo",
+                "country": "JPN",
+                "stars": 3,
+                "lat": 35.6431,
+                "lng": 139.7139,
+                "type": "French",
+            },
+            {
+                "id": "le-bernardin",
+                "name": "Le Bernardin",
+                "location": "New York",
+                "country": "USA",
+                "stars": 3,
+                "lat": 40.7618,
+                "lng": -73.9818,
+                "type": "Seafood",
+            },
+            {
+                "id": "alinea",
+                "name": "Alinea",
+                "location": "Chicago",
+                "country": "USA",
+                "stars": 3,
+                "lat": 41.9138,
+                "lng": -87.6481,
+                "type": "Modernist",
+            },
+            {
+                "id": "restaurant-de-lhotel-de-ville",
+                "name": "Restaurant de l'Hôtel de Ville",
+                "location": "Crissier",
+                "country": "CHE",
+                "stars": 3,
+                "lat": 46.5547,
+                "lng": 6.5786,
+                "type": "Swiss fine dining",
+            },
+        ],
+    )
+
+
+def build_restaurant_dataset() -> pl.DataFrame:
+    """Builds restaurant-level records used by maps, cards, and country metrics."""
     df_nz = get_nz_scraped_restaurants()
+    df_nz = df_nz.with_columns(
+        [
+            pl.col("name")
+            .str.to_lowercase()
+            .str.replace_all(r"[^a-z0-9]+", "-")
+            .str.strip_chars("-")
+            .alias("id"),
+            pl.when(pl.col("location").str.contains("Wellington"))
+            .then(pl.lit("Modern Maori / Contemporary NZ"))
+            .when(pl.col("location").str.contains("Auckland"))
+            .then(pl.lit("Contemporary"))
+            .when(pl.col("location").str.contains("Queenstown"))
+            .then(pl.lit("Organic bistro"))
+            .otherwise(pl.lit("Fine dining"))
+            .alias("type"),
+        ],
+    )
+    df_nz = df_nz.select(["id", "name", "location", "country", "stars", "lat", "lng", "type"])
 
-    # Simulate historical Kaggle dataset entries for global baseline
-    global_restaurants = [
-        {
-            "name": "L'Ambroisie",
-            "location": "Paris",
-            "country": "FRA",
-            "stars": 3,
-            "lat": 48.8553,
-            "lng": 2.3655,
-        },
-        {
-            "name": "Plénitude",
-            "location": "Paris",
-            "country": "FRA",
-            "stars": 3,
-            "lat": 48.8584,
-            "lng": 2.3412,
-        },
-        {
-            "name": "Sukiyabashi Jiro",
-            "location": "Tokyo",
-            "country": "JPN",
-            "stars": 3,
-            "lat": 35.6722,
-            "lng": 139.7628,
-        },
-        {
-            "name": "Joel Robuchon",
-            "location": "Tokyo",
-            "country": "JPN",
-            "stars": 3,
-            "lat": 35.6431,
-            "lng": 139.7139,
-        },
-        {
-            "name": "Le Bernardin",
-            "location": "New York",
-            "country": "USA",
-            "stars": 3,
-            "lat": 40.7618,
-            "lng": -73.9818,
-        },
-        {
-            "name": "Alinea",
-            "location": "Chicago",
-            "country": "USA",
-            "stars": 3,
-            "lat": 41.9138,
-            "lng": -87.6481,
-        },
-        {
-            "name": "Restaurant de l'Hôtel de Ville",
-            "location": "Crissier",
-            "country": "CHE",
-            "stars": 3,
-            "lat": 46.5547,
-            "lng": 6.5786,
-        },
-    ]
-    df_global = pl.DataFrame(global_restaurants)
+    return pl.concat([df_nz, get_global_baseline_restaurants()])
 
-    # Merge NZ and Global datasets
-    # Align schemas before concat
-    df_nz_aligned = df_nz.select(["name", "location", "country", "stars", "lat", "lng"])
-    df_global_aligned = df_global.select(["name", "location", "country", "stars", "lat", "lng"])
-    df_restaurants = pl.concat([df_nz_aligned, df_global_aligned])
 
-    # 2. Get demographics
+def build_country_metrics() -> pl.DataFrame:
+    """Builds country-level per-capita and per-GDP Michelin metrics."""
+    df_restaurants = build_restaurant_dataset()
     df_demographics = get_world_bank_data()
-
-    # 3. Calculate per-capita indicators
-    # Group stars by country
     df_stars_grouped = df_restaurants.group_by("country").agg(
         pl.col("name").count().alias("total_restaurants"),
         pl.col("stars").sum().alias("total_stars"),
     )
 
-    # Join with demographics
     df_merged = df_demographics.join(df_stars_grouped, on="country", how="left")
     df_merged = df_merged.with_columns(
         [
@@ -250,14 +283,21 @@ def main() -> None:
     # Calculations
     df_merged = df_merged.with_columns(
         [
-            ((pl.col("total_stars") / pl.col("population")) * 100000).alias("stars_per_100k"),
+            ((pl.col("total_stars") / pl.col("population")) * COUNTRY_SCALE).alias(
+                "stars_per_100k",
+            ),
             (pl.col("gdp") / pl.col("population")).alias("gdp_per_capita"),
-            ((pl.col("total_stars") / pl.col("gdp")) * 10000000000).alias("stars_per_10b_gdp"),
+            ((pl.col("total_stars") / pl.col("gdp")) * GDP_SCALE).alias("stars_per_10b_gdp"),
         ],
     )
 
-    # Drop rows that don't have population data
-    df_merged = df_merged.filter(pl.col("population").is_not_null())
+    return df_merged.filter(
+        pl.col("population").is_not_null() & (pl.col("total_stars") > 0),
+    )
+
+
+def main() -> None:
+    df_merged = build_country_metrics()
 
     # 4. Stream Parquet structure directly to stdout
     buffer = io.BytesIO()

@@ -44,8 +44,8 @@ jobs:
 
       - name: Run Playwright Tests
         run: |
-          npx playwright install --with-deps
-          # Run visual regression verification checks here
+          npx playwright install --with-deps chromium
+          npm run smoke:dist
 
       - name: Deploy to Hugging Face Spaces
         if: ${{ env.HF_TOKEN != '' }}

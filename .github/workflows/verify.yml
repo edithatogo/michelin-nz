@@ -50,4 +50,11 @@ jobs:
         run: npm run lint
 
       - name: Compile Dashboard Build
+        env:
+          OBSERVABLE_TELEMETRY_DISABLE: true
         run: npm run build
+
+      - name: Run Static Site Smoke Tests
+        run: |
+          npx playwright install --with-deps chromium
+          npm run smoke:dist

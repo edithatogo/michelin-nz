@@ -8,14 +8,19 @@
     "build": "observable build",
     "preview": "observable preview",
     "lint": "eslint src --ext .js --no-error-on-unmatched-pattern",
+    "smoke:dist": "node scripts/smoke_static_site.mjs",
     "format": "prettier --write \"src/**/*.{js,css,md}\"",
     "prepare": "husky || true"
   },
   "dependencies": {
-    "@observablehq/framework": "latest"
+    "@observablehq/framework": "1.13.4"
+  },
+  "overrides": {
+    "esbuild": "0.28.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.61.1",
     "eslint": "^9.0.0",
     "husky": "^9.0.0",
     "lint-staged": "^15.0.0",

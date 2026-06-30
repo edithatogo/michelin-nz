@@ -3,24 +3,20 @@
 We analyze the correlation between national economic metrics (GDP and GDP per capita) and culinary stars density.
 
 ```js
-// Load the parquet file attachment
-const michelinFile = FileAttachment("data/michelin.parquet");
+// Load the generated country-level metrics
+const countryMetrics = await FileAttachment("data/country_metrics.json").json();
 
 // Establish unified reactive sliders
 const minStars = view(Inputs.range([0, 10], {step: 1, label: "Min Total Stars", value: 1}));
 const minPop = view(Inputs.range([1000000, 400000000], {step: 1000000, label: "Min Population", value: 1000000, format: d => (d / 1000000).toFixed(0) + "M"}));
 ```
 
-We execute a client-side SQL query against our Parquet file using DuckDB:
+We filter the generated country-level metrics in-browser:
 
 ```js
-// Query DuckDB using client-side SQL block
-const queryResults = await michelinFile.query(
-  `SELECT country, country_name, population, gdp, total_stars, stars_per_100k, gdp_per_capita, stars_per_10b_gdp
-   FROM "data/michelin.parquet"
-   WHERE total_stars >= ${minStars} AND population >= ${minPop}
-   ORDER BY stars_per_100k DESC`
-);
+const queryResults = countryMetrics
+  .filter((d) => d.total_stars >= minStars && d.population >= minPop)
+  .sort((a, b) => b.stars_per_100k - a.stars_per_100k);
 ```
 
 ### Visualizing Culinary Intensity vs. Wealth

@@ -49,6 +49,8 @@ To activate permanent DOI minting for releases:
 3. Create a new GitHub Release/Tag. Zenodo will automatically mint a permanent DOI using the metadata in `.zenodo.json`.
 4. Replace this note with the minted DOI badge/link after Zenodo publishes the record.
 
+See [Release Checklist](docs/release-checklist.md) before publishing DOI-bearing releases.
+
 ---
 
 ## 🚀 Bleeding-Edge Architecture & Tech Stack
