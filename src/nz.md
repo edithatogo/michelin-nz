@@ -1,66 +1,91 @@
-# NZ Culinary Guide & Map Directions
+# New Zealand Records
 
-This guide lists premium New Zealand eateries. Select a restaurant to open deep links to your mapping application of choice for directions or reviews.
+New Zealand currently has local benchmark entries in the compiled sample. These are not official Michelin Guide New Zealand awards.
 
 ```js
-// Load compiled community reviews
 const reviews = await FileAttachment("data/community_reviews.json").json();
 const allRestaurants = await FileAttachment("data/restaurants.json").json();
+const restaurants = allRestaurants
+  .filter((d) => d.country === "NZL")
+  .toSorted((a, b) => b.stars - a.stars || a.name.localeCompare(b.name));
 
-const restaurants = allRestaurants.filter(d => d.country === "NZL");
+const minStars = view(Inputs.range([1, 3], {step: 1, label: "Minimum stars", value: 1}));
+const locations = ["All", ...new Set(restaurants.map((d) => d.location).sort())];
+const location = view(Inputs.select(locations, {label: "Location", value: "All"}));
+const visibleRestaurants = restaurants
+  .filter((d) => d.stars >= minStars)
+  .filter((d) => location === "All" || d.location === location);
+```
 
-// Helper to filter reviews for a specific restaurant ID
-function getReviewsForRestaurant(id) {
-  return reviews.filter(r => r.restaurantId === id);
-}
+```js
+display(html`<div class="summary-row">
+  <div><strong>${visibleRestaurants.length}</strong><span>visible records</span></div>
+  <div><strong>${visibleRestaurants.reduce((sum, d) => sum + d.stars, 0)}</strong><span>visible stars</span></div>
+  <div><strong>${new Set(visibleRestaurants.map((d) => d.location)).size}</strong><span>locations</span></div>
+</div>`);
+```
+
+```js
+display(Plot.plot({
+  height: 320,
+  marginLeft: 110,
+  theme: "dark",
+  x: {grid: true, label: "Stars"},
+  y: {label: null},
+  marks: [
+    Plot.ruleX([0]),
+    Plot.barX(visibleRestaurants.toSorted((a, b) => a.stars - b.stars), {
+      x: "stars",
+      y: "name",
+      fill: "location",
+      title: (d) => `${d.name}\n${d.location}\n${d.type}`
+    }),
+    Plot.text(visibleRestaurants, {
+      x: "stars",
+      y: "name",
+      text: (d) => "star".repeat(0) || d.stars,
+      dx: 8,
+      fill: "#e2e8f0"
+    })
+  ]
+}));
+```
+
+## Records And Links
+
+The table exposes the compiled local fields used elsewhere in the dashboard. Map links are generated from latitude and longitude only; review links are counted from community JSON submissions in this repository.
+
+```js
+display(Inputs.table(visibleRestaurants.map((r) => ({
+  name: r.name,
+  location: r.location,
+  stars: r.stars,
+  type: r.type,
+  google_maps: `https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lng}`,
+  openstreetmap: `https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=17/${r.lat}/${r.lng}`,
+  community_reviews: reviews.filter((review) => review.restaurantId === r.id).length
+}))));
 ```
 
 ```js
 display(html`<div class="dashboard-grid">
-  ${restaurants.map((r) => {
-    const restaurantReviews = getReviewsForRestaurant(r.id);
-    return html`
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <h3>${r.name}</h3>
-          <span class="star-rating">${"★".repeat(r.stars)}</span>
-        </div>
-        <p><strong>Cuisine:</strong> ${r.type}</p>
-        <p><strong>Location:</strong> ${r.location}</p>
-        
-        <div style="margin-top: 1rem; border-top: 1px solid #1e293b; padding-top: 0.8rem;">
-          <strong>Get Directions:</strong>
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
-            <a class="direction-link" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lng}" style="color: #06b6d4; text-decoration: none;">Google Maps</a> |
-            <a class="direction-link" target="_blank" href="maps://?q=${r.name}&ll=${r.lat},${r.lng}" style="color: #fbbf24; text-decoration: none;">Apple Maps</a> |
-            <a class="direction-link" target="_blank" href="https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=17/${r.lat}/${r.lng}" style="color: #f43f5e; text-decoration: none;">OpenStreetMap</a>
-          </div>
-        </div>
-
-        <div style="margin-top: 0.8rem;">
-          <strong>Read Reviews:</strong>
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
-            <a target="_blank" href="https://www.google.com/search?q=${encodeURIComponent(`${r.name} ${r.location} reviews`)}" style="color: #fbbf24; text-decoration: none;">Google Search</a>
-          </div>
-        </div>
-
-        ${restaurantReviews.length > 0 ? html`
-          <div style="margin-top: 1rem; border-top: 1px dashed #1e293b; padding-top: 0.8rem;">
-            <strong>Community Blog Reviews:</strong>
-            ${restaurantReviews.map(rev => html`
-              <div style="font-size: 0.9rem; margin-top: 0.5rem; color: #cbd5e1; background: rgba(30, 41, 59, 0.4); padding: 0.6rem; border-radius: 6px;">
-                <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 0.2rem;">
-                  <span>${rev.author}</span>
-                  <span style="color: #fbbf24;">${rev.rating}</span>
-                </div>
-                <p style="margin: 0; font-style: italic;">"${rev.content}"</p>
-                <a target="_blank" href="${rev.link}" style="display: inline-block; margin-top: 0.4rem; font-size: 0.8rem; color: #06b6d4;">Read Full Post &rarr;</a>
-              </div>
-            `)}
-          </div>
-        ` : ""}
-      </div>
-    `;
-  })}
+  ${visibleRestaurants.map((r) => html`<div class="card compact-card">
+    <div class="card-heading">
+      <h3>${r.name}</h3>
+      <span class="star-rating">${"★".repeat(r.stars)}</span>
+    </div>
+    <p>${r.type}</p>
+    <p><strong>${r.location}</strong></p>
+    <p class="link-row">
+      <a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lng}">Google Maps</a>
+      <a target="_blank" href="https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=17/${r.lat}/${r.lng}">OpenStreetMap</a>
+    </p>
+  </div>`)}
 </div>`);
 ```
+
+## Interpretation Notes
+
+- These entries are local benchmark records, not a claim that Michelin currently awards stars in New Zealand.
+- The star-like score is a dashboard normalization input used for cross-country calculations.
+- If this project is used publicly, the local source and permission basis for each New Zealand record should be documented before treating the data as production-grade.

@@ -1,41 +1,93 @@
 # Michelin Star Per-Capita Dashboard
 
-Welcome to the **Michelin Star Per-Capita Dashboard**. This project visualizes global fine dining density metrics by normalising Michelin ratings with demographic and economic data.
+This dashboard compares a small, explicitly curated set of restaurant indicators against country population and GDP. It is useful for testing methodology and interactive analysis, but it is not a complete Michelin Guide database.
+
+```js
+const countryMetrics = await FileAttachment("data/country_metrics.json").json();
+const restaurants = await FileAttachment("data/restaurants.json").json();
+
+const totalCountries = countryMetrics.length;
+const totalRestaurants = restaurants.length;
+const totalStars = restaurants.reduce((sum, d) => sum + Number(d.stars ?? 0), 0);
+const nzRestaurants = restaurants.filter((d) => d.country === "NZL").length;
+const topDensity = countryMetrics.toSorted((a, b) => b.stars_per_100k - a.stars_per_100k)[0];
+const topGdpEfficiency = countryMetrics.toSorted((a, b) => b.stars_per_10b_gdp - a.stars_per_10b_gdp)[0];
+```
+
+```js
+display(html`<div class="kpi-grid">
+  <div class="metric-card"><span>Countries</span><strong>${totalCountries}</strong><small>represented in the compiled sample</small></div>
+  <div class="metric-card"><span>Restaurants</span><strong>${totalRestaurants}</strong><small>restaurant-level records</small></div>
+  <div class="metric-card"><span>Total Stars</span><strong>${totalStars}</strong><small>sum of compiled indicators</small></div>
+  <div class="metric-card"><span>NZ Records</span><strong>${nzRestaurants}</strong><small>local benchmark entries</small></div>
+</div>`);
+```
+
+```js
+display(html`<div class="notice">
+  <strong>Coverage warning:</strong> the current dataset is a curated demonstration sample. Per-capita rankings can be inspected, but they should not be read as official country rankings or a complete Michelin market comparison.
+</div>`);
+```
+
+## Overview
+
+```js
+display(Plot.plot({
+  theme: "dark",
+  height: 320,
+  marginLeft: 120,
+  x: {grid: true, label: "Stars per 100k residents"},
+  y: {label: null},
+  marks: [
+    Plot.ruleX([0]),
+    Plot.barX(countryMetrics.toSorted((a, b) => a.stars_per_100k - b.stars_per_100k), {
+      x: "stars_per_100k",
+      y: "country_name",
+      fill: "#38bdf8",
+      title: (d) => `${d.country_name}\nStars: ${d.total_stars}\nRestaurants: ${d.total_restaurants}\nStars/100k: ${d.stars_per_100k.toFixed(3)}`
+    }),
+    Plot.text(countryMetrics, {
+      x: "stars_per_100k",
+      y: "country_name",
+      text: (d) => d.stars_per_100k.toFixed(3),
+      dx: 6,
+      fill: "#e2e8f0"
+    })
+  ]
+}));
+```
 
 <div class="dashboard-grid">
-  <div class="card">
-    <h2>NZ Analysis</h2>
-    <p>Localised look at New Zealand's top culinary establishments, matching Hat indicators to Star metrics across cities.</p>
-    <a href="./nz">Explore NZ Data &rarr;</a>
-  </div>
-  <div class="card">
-    <h2>Global Map</h2>
-    <p>Zoomable WebGL globe representing culinary star density adjusted per 100,000 residents.</p>
-    <a href="./global-map">View Globe &rarr;</a>
-  </div>
-  <div class="card">
-    <h2>GDP vs. Stars</h2>
-    <p>Interactive scatter plot and metrics correlating culinary intensity against national economic size.</p>
-    <a href="./gdp-stars">Analyze Economic Data &rarr;</a>
-  </div>
-  <div class="card">
-    <h2>Pivot Table</h2>
-    <p>Choose countries, row dimensions, measures, and aggregations to inspect the compiled metrics.</p>
-    <a href="./pivot">Open Pivot Table &rarr;</a>
-  </div>
+  <a class="nav-card" href="./pivot"><strong>Pivot Table</strong><span>Filter countries, choose measures, and change aggregations.</span></a>
+  <a class="nav-card" href="./gdp-stars"><strong>GDP Analysis</strong><span>Compare density against GDP per capita and economic scale.</span></a>
+  <a class="nav-card" href="./global-map"><strong>Map</strong><span>Inspect the restaurant locations included in the compiled sample.</span></a>
+  <a class="nav-card" href="./nz"><strong>NZ Records</strong><span>Review the local entries, locations, and source caveats.</span></a>
 </div>
 
----
+## Current Leaders In This Sample
 
-## 📊 Methodology & Disclaimers
+```js
+display(Inputs.table([
+  {
+    metric: "Highest stars per 100k residents",
+    country: topDensity.country_name,
+    value: topDensity.stars_per_100k
+  },
+  {
+    metric: "Highest stars per $10B GDP",
+    country: topGdpEfficiency.country_name,
+    value: topGdpEfficiency.stars_per_10b_gdp
+  }
+], {
+  format: {
+    value: (d) => Number(d).toLocaleString(undefined, {maximumFractionDigits: 4})
+  }
+}));
+```
 
-<div class="card" style="border-left: 4px solid var(--theme-accent); background: rgba(15, 23, 42, 0.4); margin-top: 1.5rem;">
-  <h3>⚠️ Fine Dining Density Normalization</h3>
-  <p>Please note the following constraints when interpreting the demographic metrics on this dashboard:</p>
-  <ul>
-    <li><strong>Michelin Guide Coverage:</strong> The Michelin Guide is city/region-based and does not cover all territories within listed countries (e.g. only select metropolitan areas in the United States or Japan are graded). Comparison values represent guide density rather than absolute country capacity.</li>
-    <li><strong>New Zealand "Hats" translation:</strong> New Zealand cuisine guides historically utilize the "Cuisine Good Food Awards" Hat indicators. For cross-border benchmarking on this dashboard, Hats are translated to Stars using an equivalence ratio of: <em>3 Hats = 3 Stars, 2 Hats = 2 Stars, 1 Hat = 1 Star</em>.</li>
-    <li><strong>Demographics Sources:</strong> Population and GDP stats are pulled dynamically from official World Bank Open Data APIs and reused under the World Bank dataset terms.</li>
-    <li><strong>Michelin data status:</strong> Michelin Guide names, distinctions, ratings, text, branding, and related database rights are not open data. This site should treat any Michelin-derived values as limited reference facts requiring careful attribution and should not redistribute a comprehensive scraped Michelin database without permission.</li>
-  </ul>
-</div>
+## Methodology And Licensing Boundaries
+
+- Michelin Guide names, distinctions, ratings, text, branding, and related database rights are not open data. This project must not redistribute a comprehensive scraped Michelin database without permission.
+- World Bank population and GDP indicators are reused with attribution from World Bank Open Data.
+- New Zealand values are benchmark indicators from the local compiled sample; they are not official Michelin Guide New Zealand awards.
+- Per-capita metrics are sensitive to guide coverage. Countries where Michelin covers only selected cities are not comparable to countries with broader guide coverage.

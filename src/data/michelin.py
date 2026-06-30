@@ -157,7 +157,7 @@ def get_world_bank_data() -> pl.DataFrame:
     if df_pop.is_empty() or df_gdp.is_empty():
         return pl.DataFrame()
 
-    return df_pop.join(df_gdp, on="country", how="full")
+    return df_pop.join(df_gdp, on="country", how="left")
 
 
 def get_global_baseline_restaurants() -> pl.DataFrame:

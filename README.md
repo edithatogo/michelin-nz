@@ -76,7 +76,7 @@ See [Release Checklist](docs/release-checklist.md) before publishing DOI-bearing
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate
-   pip install pandas requests beautifulsoup4 pyarrow
+   pip install polars requests beautifulsoup4 pyarrow pytest pytest-cov hypothesis ruff basedpyright
    ```
 
 3. **Install Node Packages:**
@@ -111,6 +111,6 @@ We welcome community contributions, particularly from food bloggers, critics, an
 
 ## 📄 License & Citation
 
-This project is open-source and licensed under the MIT License. See [LICENSE](file:///Volumes/PortableSSD/GitHub/michelin-nz/LICENSE) for details.
+This project's source code is licensed under the MIT License. See [LICENSE](file:///Volumes/PortableSSD/GitHub/michelin-nz/LICENSE) for details. Third-party data, names, marks, and ratings remain subject to their original owners' terms.
 
 To cite this project, please refer to [CITATION.cff](file:///Volumes/PortableSSD/GitHub/michelin-nz/CITATION.cff).

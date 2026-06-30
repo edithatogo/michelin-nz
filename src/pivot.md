@@ -29,7 +29,7 @@ const measure = view(Inputs.select(
     ["stars_per_10b_gdp", "Stars per $10B GDP"],
     ["gdp_per_capita", "GDP per capita"],
     ["population", "Population"],
-    ["gdp_current_usd", "GDP current USD"]
+    ["gdp", "GDP current USD"]
   ],
   {label: "Measure", value: "stars_per_100k"}
 ));
@@ -65,7 +65,7 @@ const restaurantCounts = restaurants
     stars_per_10b_gdp: null,
     gdp_per_capita: null,
     population: null,
-    gdp_current_usd: null
+    gdp: null
   }));
 
 const sourceRows = rowDimension === "source"
@@ -91,7 +91,7 @@ const groupedRows = Array.from(
     stars_per_10b_gdp: aggregate(rows.map((d) => Number(d.stars_per_10b_gdp)), aggregation),
     gdp_per_capita: aggregate(rows.map((d) => Number(d.gdp_per_capita)), aggregation),
     population: aggregate(rows.map((d) => Number(d.population)), aggregation),
-    gdp_current_usd: aggregate(rows.map((d) => Number(d.gdp_current_usd)), aggregation),
+    gdp: aggregate(rows.map((d) => Number(d.gdp)), aggregation),
     selected_measure: aggregate(rows.map((d) => Number(d[measure])), aggregation)
   })
 ).sort((a, b) => (b.selected_measure ?? -Infinity) - (a.selected_measure ?? -Infinity));
@@ -138,7 +138,7 @@ display(Inputs.table(groupedRows, {
     "stars_per_10b_gdp",
     "gdp_per_capita",
     "population",
-    "gdp_current_usd"
+    "gdp"
   ]
 }));
 ```

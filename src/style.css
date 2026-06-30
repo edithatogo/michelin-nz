@@ -23,18 +23,30 @@ body {
   padding: 0;
 }
 
+.observablehq {
+  max-width: 1180px;
+}
+
+h1 {
+  letter-spacing: 0;
+}
+
+a {
+  color: #7dd3fc;
+}
+
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  padding: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
 }
 
 .card {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid var(--theme-border);
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 8px;
+  padding: 1rem;
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   transition: transform 0.2s ease, border-color 0.2s ease;
@@ -49,4 +61,86 @@ body {
   color: var(--theme-accent);
   text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
   font-weight: bold;
+}
+
+.kpi-grid,
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.metric-card,
+.summary-row > div,
+.nav-card,
+.notice {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: #0f172a;
+}
+
+.metric-card,
+.summary-row > div {
+  padding: 1rem;
+}
+
+.metric-card span,
+.summary-row span {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.metric-card strong,
+.summary-row strong {
+  display: block;
+  margin: 0.25rem 0;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.metric-card small {
+  color: #cbd5e1;
+}
+
+.notice {
+  padding: 1rem;
+  border-left: 4px solid var(--theme-accent);
+  color: #e2e8f0;
+}
+
+.nav-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+  color: var(--theme-foreground);
+  text-decoration: none;
+}
+
+.nav-card:hover {
+  border-color: #38bdf8;
+}
+
+.nav-card span,
+.compact-card p {
+  color: #cbd5e1;
+}
+
+.card-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.card-heading h3 {
+  margin: 0;
+}
+
+.link-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }

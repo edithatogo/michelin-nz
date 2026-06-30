@@ -6,9 +6,9 @@ import { chromium } from "@playwright/test";
 
 const pages = [
   { path: "/", text: "Michelin Star Per-Capita Dashboard" },
-  { path: "/nz", text: "Hiakai" },
-  { path: "/global-map", text: "Global Star Density Map", visualSelector: "svg" },
-  { path: "/network", text: "Chef & Cuisine Influence Network", visualSelector: "svg" },
+  { path: "/nz", text: "New Zealand Records", visualSelector: "svg" },
+  { path: "/global-map", text: "Restaurant Location Map", visualSelector: "svg" },
+  { path: "/network", text: "Cuisine And Country Network", visualSelector: "svg" },
   { path: "/gdp-stars", text: "GDP & Stars Analysis", visualSelector: "svg" },
   { path: "/pivot", text: "Pivot Results", visualSelector: "svg" },
   { path: "/sources", text: "Restaurant-Level Records" }

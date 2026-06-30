@@ -1,34 +1,45 @@
-# Chef & Cuisine Influence Network
+# Cuisine And Country Network
 
-Static SVG network of chef, restaurant, cuisine, and geography relationships. The page no longer depends on an external WebGL bundle, so deployment checks can verify that the image renders reliably.
+This network is derived from the compiled restaurant records. It connects each country to its restaurants and each restaurant to its cuisine/type label.
 
 ```js
-const nodes = [
-  {id: "Monique Fiso", type: "chef", hub: "NZL", x: 0, y: 0},
-  {id: "Hiakai", type: "restaurant", hub: "NZL", x: 1, y: 0.25},
-  {id: "Modern Maori", type: "cuisine", hub: "NZL", x: 2, y: 0},
-  {id: "The Grove", type: "restaurant", hub: "NZL", x: 1, y: -0.65},
-  {id: "French technique", type: "cuisine", hub: "FRA", x: 2.4, y: -0.95},
-  {id: "Bernard Pacaud", type: "chef", hub: "FRA", x: 0, y: 1.35},
-  {id: "L'Ambroisie", type: "restaurant", hub: "FRA", x: 1.1, y: 1.35},
-  {id: "French haute cuisine", type: "cuisine", hub: "FRA", x: 2.25, y: 1.35},
-  {id: "Jiro Ono", type: "chef", hub: "JPN", x: 0, y: 2.65},
-  {id: "Sukiyabashi Jiro", type: "restaurant", hub: "JPN", x: 1.2, y: 2.65},
-  {id: "Sushi", type: "cuisine", hub: "JPN", x: 2.25, y: 2.65}
-];
+const restaurants = await FileAttachment("data/restaurants.json").json();
+
+const countryNodes = Array.from(new Set(restaurants.map((d) => d.country))).map((country, index) => ({
+  id: country,
+  label: country,
+  kind: "country",
+  x: 0,
+  y: index
+}));
+
+const restaurantNodes = restaurants.map((restaurant, index) => ({
+  id: restaurant.id,
+  label: restaurant.name,
+  kind: "restaurant",
+  country: restaurant.country,
+  stars: restaurant.stars,
+  x: 1.4,
+  y: index * 0.45
+}));
+
+const cuisineNodes = Array.from(new Set(restaurants.map((d) => d.type))).map((type, index) => ({
+  id: `type-${index}`,
+  label: type,
+  kind: "cuisine",
+  x: 3,
+  y: index * 0.8
+}));
+
+const cuisineByLabel = new Map(cuisineNodes.map((node) => [node.label, node]));
+const nodes = [...countryNodes, ...restaurantNodes, ...cuisineNodes];
+const nodeById = new Map(nodes.map((node) => [node.id, node]));
 
 const links = [
-  {source: "Monique Fiso", target: "Hiakai"},
-  {source: "Hiakai", target: "Modern Maori"},
-  {source: "The Grove", target: "French technique"},
-  {source: "Monique Fiso", target: "French technique"},
-  {source: "Bernard Pacaud", target: "L'Ambroisie"},
-  {source: "L'Ambroisie", target: "French haute cuisine"},
-  {source: "Jiro Ono", target: "Sukiyabashi Jiro"},
-  {source: "Sukiyabashi Jiro", target: "Sushi"}
+  ...restaurants.map((restaurant) => ({source: restaurant.country, target: restaurant.id, relation: "country"})),
+  ...restaurants.map((restaurant) => ({source: restaurant.id, target: cuisineByLabel.get(restaurant.type).id, relation: "cuisine"}))
 ];
 
-const nodeById = new Map(nodes.map((node) => [node.id, node]));
 const linkRows = links.map((link) => ({
   ...link,
   x1: nodeById.get(link.source).x,
@@ -38,25 +49,20 @@ const linkRows = links.map((link) => ({
 }));
 ```
 
-## Influence Graph
-
 ```js
-const networkChart = Plot.plot({
-  width: 900,
-  height: 520,
-  marginLeft: 120,
-  marginRight: 180,
-  x: {axis: null, domain: [-0.3, 2.7]},
-  y: {axis: null, domain: [-1.2, 3]},
+display(Plot.plot({
+  width: 940,
+  height: 620,
+  marginLeft: 60,
+  marginRight: 260,
+  x: {axis: null, domain: [-0.2, 3.6]},
+  y: {axis: null},
   color: {
     legend: true,
-    domain: ["chef", "restaurant", "cuisine"],
-    range: ["#fbbf24", "#06b6d4", "#f43f5e"]
+    domain: ["country", "restaurant", "cuisine"],
+    range: ["#38bdf8", "#fbbf24", "#fb7185"]
   },
-  style: {
-    background: "#020617",
-    color: "#f8fafc"
-  },
+  style: {background: "#020617", color: "#f8fafc"},
   marks: [
     Plot.link(linkRows, {
       x1: "x1",
@@ -64,31 +70,29 @@ const networkChart = Plot.plot({
       x2: "x2",
       y2: "y2",
       stroke: "#475569",
-      strokeWidth: 2
+      strokeOpacity: 0.8
     }),
     Plot.dot(nodes, {
       x: "x",
       y: "y",
-      fill: "type",
-      r: 10,
+      fill: "kind",
+      r: (d) => d.kind === "restaurant" ? Math.max(5, d.stars * 3) : 8,
       stroke: "#f8fafc"
     }),
     Plot.text(nodes, {
       x: "x",
       y: "y",
-      text: "id",
-      dx: 14,
+      text: "label",
+      dx: 12,
       fill: "#f8fafc",
-      fontSize: 12,
+      fontSize: 11,
       textAnchor: "start"
     })
   ]
-});
-
-display(networkChart);
+}));
 ```
 
-## Network Data
+## Nodes
 
 ```js
 display(Inputs.table(nodes));

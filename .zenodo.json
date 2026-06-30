@@ -3,12 +3,12 @@
   "upload_type": "software",
   "version": "1.0.0",
   "publication_date": "2026-06-30",
-  "description": "A visually stunning dashboard for open-source gastronomy data science correlating Michelin-starred restaurants against GDP and population metrics.",
+  "description": "An Observable Framework dashboard for selected gastronomy indicators, population, and GDP metrics. The software is MIT licensed; third-party data rights remain with their original providers.",
   "creators": [
     {
       "name": "Mordaunt, Dylan A",
       "orcid": "0000-0002-5364-1650",
-      "affiliation": "Open-source Gastronomy Data Science Contributor"
+      "affiliation": "Gastronomy Data Science Contributor"
     }
   ],
   "keywords": [
@@ -16,7 +16,7 @@
     "michelin-star",
     "gdp-per-capita",
     "observable-framework",
-    "duckdb"
+    "observable-plot"
   ],
   "license": "MIT",
   "access_right": "open"
