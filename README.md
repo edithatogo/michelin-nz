@@ -76,7 +76,7 @@ See [Release Checklist](docs/release-checklist.md) before publishing DOI-bearing
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate
-   pip install polars requests beautifulsoup4 pyarrow pytest pytest-cov hypothesis ruff basedpyright
+   pip install polars requests pyarrow pytest pytest-cov hypothesis ruff basedpyright
    ```
 
 3. **Install Node Packages:**

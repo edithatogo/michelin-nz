@@ -1,19 +1,15 @@
-# Track: WebGL Mapping & Spatial Binning
+# Track: Historical Visualization Work
 
-## Overview
-This track implements the geographic and network visualizations. It sets up:
-1. Deck.gl maps to display WebGL-accelerated restaurant layers and hexbins.
-2. Cosmograph (cosmos.gl) network visualizations showing chef and cuisine connections.
-3. Integration of map interactions matching our dark-theme aesthetics.
+This archived track is superseded by the current aggregate-only product scope.
 
-## Tasks
+Current implementation guidance lives in:
 
-### [x] Task: WebGL Mapping (Deck.gl)
-*   **Action:** Install Deck.gl modules and write the map rendering code in `src/global-map.md`.
-*   **Verification:** Run build and confirm the interactive global map compiles cleanly.
-*   **Git Action:** Commit as `feat(map): implement global Deck.gl restaurant spatial visualization`.
+* `conductor/product-guidelines.md`
+* `conductor/spec.md`
+* `observablehq.config.js`
+* `src/nz.md`
+* `src/gdp-stars.md`
+* `src/pivot.md`
 
-### [x] Task: GPU Network Graphs (Cosmograph)
-*   **Action:** Implement chef and cuisine network graphs in `src/network.md` powered by Cosmograph.
-*   **Verification:** Confirm that nodes and links load correctly and layouts render cleanly.
-*   **Git Action:** Commit as `feat(network): build GPU accelerated network graph using Cosmograph`.
+The current dashboard uses aggregate charts, tables, and filters. Historical visualizations that
+required restricted source rows are no longer implementation guidance.

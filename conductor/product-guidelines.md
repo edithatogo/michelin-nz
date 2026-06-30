@@ -1,25 +1,22 @@
-# Product Guidelines: Michelin Star Per-Capita Dashboard
+# Product Guidelines: Aggregate Gastronomy Indicator Dashboard
 
-## Design & Aesthetics
-* **Theme:** Sleek Dark Mode (Deep slate `#0f172a` and midnight navy `#020617` backgrounds).
-* **Color Palette:**
-  - Backgrounds: Dark slate/blue values.
-  - Michelin Stars: Neon Gold/Yellow glow effects (`#fbbf24`, `drop-shadow`).
-  - Data Gradients: High-visibility neon accents (e.g., cyan `#06b6d4`, violet `#8b5cf6`, rose `#f43f5e`) to represent varying densities of stars or GDP per capita.
-* **Typography:** Modern, clean sans-serif (e.g., *Outfit* or *Inter* from Google Fonts) to project a premium, state-of-the-art feel.
+## Design
 
-## User Experience (UX) & Interactions
-* **Micro-interactions:** Smooth hover triggers on maps, chart elements, and scatter points with detailed, custom tooltips.
-* **View Transitions API:** Implement native browser View Transitions so components visually morph and transition smoothly when switching tabs or views.
-* **Map Controls:** High-performance, zoomable global map (Deck.gl) running WebGL-accelerated renderings directly from SQLRooms query selections.
-* **GPU-Accelerated Spatial Hexbins:** Support 3D hexagonal density columns using Deck.gl to represent star concentrations in dense metropolitan hubs.
-* **GPU network visuals:** Interactive chef network connection maps powered by Cosmograph (cosmos.gl) showing influence hubs and connection links.
-* **Unified State Management:** SQLRooms coordinates database states. Filtering the dataset on one view (e.g., population sliders) instantly and reactively queries DuckDB WASM to update all maps, graphs, and plots.
-* **Natural Language Query Interface:** Integration of a simple search box translating client requests to client-side SQL executing on DuckDB WASM via a lightweight LLM agent.
-* **Animations:** Playable timeline transition animations showing geographic expansion of the Michelin Guide globally over time.
+* Keep the interface analytical and compact.
+* Use restrained contrast, readable type, and accessible chart colors.
+* Prioritize comparison, filtering, and methodology clarity over decoration.
+* Avoid visual treatments that imply exact location data or endorsement by third-party guides.
 
-## Data Interpretation, Methodology & Integrity
-* **ISO-Standardized Keys:** Use ISO 3166-1 alpha-3 codes for countries and ISO 3166-2 for regional boundaries to guarantee matching.
-* **Methodology Overlay:** Informative guidelines outlining regional coverage restrictions of the Michelin Guide and details on the Hat-to-Star NZ translation weight.
-* **Visual Density & Lineage:** Clear grouping of controls. Add an interactive "Data Lineage Graph" mapping origin verification (original source APIs -> build compilation -> current visualization).
-* **Performance First:** Heavy datasets should be pre-aggregated or processed into optimized static JSON/Parquet assets so that page loads and transitions are instantaneous.
+## Interaction
+
+* Filters must operate on aggregate dimensions such as country, region grouping, and measure.
+* Pivot controls should allow users to choose the displayed measure without exposing source rows.
+* Charts must remain readable on mobile and desktop.
+* Removed legacy routes should continue returning 404 rather than stale deployed pages.
+
+## Methodology And Integrity
+
+* Every displayed metric should be reproducible from aggregate inputs.
+* Source notes must distinguish code licensing from third-party data rights.
+* New data sources require documented redistribution permission or a defensible aggregate-only use.
+* The dashboard must not contain public review material or individual restaurant-level records.

@@ -1,37 +1,39 @@
-# Contributing to Michelin Per-Capita Dashboard
+# Contributing to the Aggregate Dashboard
 
-We are building a community-driven database of restaurant blog reviews. We welcome pull requests from bloggers, critics, and developers!
+This project now accepts aggregate-only changes. Contributions should improve methodology,
+country-level indicators, documentation, charting, accessibility, testing, or deployment.
 
----
+Do not submit individual restaurant records, review snippets, coordinates, guide text, photos,
+booking metadata, scraped Michelin pages, or other source rows derived from proprietary guides.
 
-## ✍️ How to Add Your Blog Review
+## Acceptable Contributions
 
-If you have reviewed one of the listed restaurants on your blog, Substack, or social media, you can add it directly to our dashboard cards:
+1. Country-level aggregate metrics with clear provenance and a redistribution basis.
+2. Reproducible analysis code that calculates ratios from aggregate inputs.
+3. Documentation that explains assumptions, data limitations, licensing, and methodology.
+4. UI improvements for the existing aggregate dashboard pages.
+5. Tests, CI fixes, accessibility fixes, and deployment improvements.
 
-1. **Find the restaurant ID:**
-   Look inside `src/nz.md` for the restaurant array keys (e.g., `hiakai`, `the-grove`, `amisfield`).
+## Data Requirements
 
-2. **Create a review JSON file:**
-   Add a JSON file inside `src/data/reviews/` named `{restaurant-id}.json` (or `{restaurant-id}-{your-blog-name}.json` if one already exists).
+Any data contribution must include:
 
-3. **Format your JSON review:**
-   ```json
-   {
-     "restaurantId": "hiakai",
-     "author": "My Food Substack Name",
-     "rating": "4.8/5",
-     "content": "A short, engaging snippet of your review (maximum 150 characters).",
-     "link": "https://yourblog.substack.com/post-link"
-   }
-   ```
+1. The source name and URL.
+2. The exact fields used.
+3. The permission, license, or public-domain basis for using the data.
+4. A note confirming that no individual restaurant-level or review-level records are included.
 
-4. **Submit a Pull Request:**
-   Commit the file and open a PR on GitHub. Our automated pipeline will compile the JSON files on the next build!
+## Developer Workflow
 
----
+1. Fork the repo and create a branch such as `feat/aggregate-methodology`.
+2. Follow the coding guidelines inside `conductor/code_styleguides/`.
+3. Run the local checks before opening a pull request:
 
-## 💻 Developer Contributions
-
-1. Fork the repo and create a branch: `feat/my-awesome-improvement`.
-2. Follow our coding guidelines inside [code_styleguides/](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/code_styleguides/).
-3. Make sure to run `npm run build` locally before committing to check for compile errors.
+```bash
+npm run lint
+OBSERVABLE_TELEMETRY_DISABLE=true npm run build
+npm run smoke:dist
+.venv/bin/ruff check src/data/ tests/ scripts/check_external_deployments.py
+.venv/bin/pytest --cov=src/data --cov-fail-under=85
+npx basedpyright src/data/
+```
