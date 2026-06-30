@@ -44,7 +44,7 @@ jobs:
 
       - name: Run Playwright Tests
         run: |
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
           npm run smoke:dist
 
       - name: Deploy to Hugging Face Spaces

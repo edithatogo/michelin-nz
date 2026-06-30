@@ -56,5 +56,5 @@ jobs:
 
       - name: Run Static Site Smoke Tests
         run: |
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
           npm run smoke:dist
