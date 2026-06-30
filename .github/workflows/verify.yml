@@ -27,7 +27,7 @@ jobs:
       - name: Install Python Dependencies
         run: |
           python -m venv .venv
-          .venv/bin/pip install pandas requests beautifulsoup4 pyarrow pytest pytest-cov hypothesis ruff basedpyright
+          .venv/bin/pip install polars requests beautifulsoup4 pyarrow pytest pytest-cov hypothesis ruff basedpyright
 
       - name: Run Python Linter (Ruff)
         run: .venv/bin/ruff check src/data/ tests/

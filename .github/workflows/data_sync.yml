@@ -28,7 +28,7 @@ jobs:
       - name: Create Python Virtual Environment
         run: |
           python -m venv .venv
-          .venv/bin/pip install pandas requests beautifulsoup4 pyarrow
+          .venv/bin/pip install polars requests beautifulsoup4 pyarrow
 
       - name: Install Node Dependencies
         run: npm ci
