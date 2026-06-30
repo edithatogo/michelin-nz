@@ -10,7 +10,7 @@
 * [Development Workflow](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/workflow.md)
 
 ## Active Tracks
-* **Track:** [Project Scaffolding & Observable Bootstrapping](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/bootstrap/index.md) (`active`)
+* *None active. Ready to start Track 2 (data_loader).*
 * **All Tracks Index:** [Tracks Index](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/index.md)
 
 ## Code Style Guides
