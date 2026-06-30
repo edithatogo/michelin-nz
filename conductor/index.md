@@ -10,7 +10,7 @@
 * [Development Workflow](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/workflow.md)
 
 ## Active Tracks
-* **Track:** [Data loader Pipeline & Scraping](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/data_loader/index.md) (`active`)
+* *None active. Ready to start Track 3 (core_viz).*
 * **All Tracks Index:** [Tracks Index](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/index.md)
 
 ## Code Style Guides
