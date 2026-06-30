@@ -43,6 +43,7 @@ jobs:
         run: npm run build
 
       - name: Run Playwright Tests
+        timeout-minutes: 3
         run: |
           npx playwright install chromium
           npm run smoke:dist

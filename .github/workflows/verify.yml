@@ -55,6 +55,7 @@ jobs:
         run: npm run build
 
       - name: Run Static Site Smoke Tests
+        timeout-minutes: 3
         run: |
           npx playwright install chromium
           npm run smoke:dist
