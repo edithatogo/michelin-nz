@@ -1,5 +1,7 @@
-import { spawn } from "node:child_process";
-import { request } from "node:http";
+import { createReadStream } from "node:fs";
+import { stat } from "node:fs/promises";
+import { createServer } from "node:http";
+import path from "node:path";
 import { chromium } from "@playwright/test";
 
 const pages = [
@@ -11,9 +13,18 @@ const pages = [
   { path: "/sources", text: "Restaurant-Level Records" }
 ];
 
+const mimeTypes = new Map([
+  [".css", "text/css; charset=utf-8"],
+  [".html", "text/html; charset=utf-8"],
+  [".js", "text/javascript; charset=utf-8"],
+  [".json", "application/json; charset=utf-8"],
+  [".parquet", "application/octet-stream"],
+  [".svg", "image/svg+xml"]
+]);
+
 const port = Number(process.env.SMOKE_PORT || 4173);
 const baseUrl = `http://127.0.0.1:${port}`;
-let browser;
+const distRoot = path.resolve("dist");
 const launchOptions = { headless: true };
 if (process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH) {
   launchOptions.executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
@@ -22,52 +33,51 @@ if (process.env.PLAYWRIGHT_BROWSER_CHANNEL) {
   launchOptions.channel = process.env.PLAYWRIGHT_BROWSER_CHANNEL;
 }
 
-function waitForServer(url, timeoutMs = 30_000) {
-  const started = Date.now();
-
-  return new Promise((resolve, reject) => {
-    const check = () => {
-      const req = request(url, { method: "HEAD" }, (res) => {
-        res.resume();
-        if (res.statusCode && res.statusCode < 500) {
-          resolve();
-          return;
-        }
-        retry();
-      });
-
-      req.on("error", retry);
-      req.end();
-    };
-
-    const retry = () => {
-      if (Date.now() - started > timeoutMs) {
-        reject(new Error(`Timed out waiting for ${url}`));
-        return;
-      }
-      setTimeout(check, 500);
-    };
-
-    check();
-  });
+function distPathForRequest(requestUrl) {
+  const url = new URL(requestUrl, baseUrl);
+  const decodedPath = decodeURIComponent(url.pathname);
+  const cleanPath = decodedPath === "/" ? "/index.html" : decodedPath;
+  const candidate = path.resolve(distRoot, `.${cleanPath}`);
+  if (!candidate.startsWith(distRoot)) {
+    return null;
+  }
+  if (path.extname(candidate)) {
+    return candidate;
+  }
+  return `${candidate}.html`;
 }
 
-const server = spawn(
-  "npx",
-  ["observable", "preview", "--host", "127.0.0.1", "--port", String(port)],
-  { stdio: ["ignore", "pipe", "pipe"] }
-);
+const server = createServer(async (req, res) => {
+  const filePath = distPathForRequest(req.url ?? "/");
+  if (!filePath) {
+    res.writeHead(400);
+    res.end("Bad request");
+    return;
+  }
 
-let serverOutput = "";
-server.stdout.on("data", (chunk) => {
-  serverOutput += chunk.toString();
-});
-server.stderr.on("data", (chunk) => {
-  serverOutput += chunk.toString();
+  try {
+    const fileStat = await stat(filePath);
+    if (!fileStat.isFile()) {
+      throw new Error("Not a file");
+    }
+    res.writeHead(200, {
+      "content-length": fileStat.size,
+      "content-type": mimeTypes.get(path.extname(filePath)) ?? "application/octet-stream"
+    });
+    if (req.method === "HEAD") {
+      res.end();
+      return;
+    }
+    createReadStream(filePath).pipe(res);
+  } catch {
+    res.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
+    res.end("Not found");
+  }
 });
 
+let browser;
 try {
-  await waitForServer(`${baseUrl}/`);
+  await new Promise((resolve) => server.listen(port, "127.0.0.1", resolve));
 
   browser = await chromium.launch(launchOptions);
   const page = await browser.newPage();
@@ -89,7 +99,7 @@ try {
       throw new Error(`${item.path} rendered too little visible text`);
     }
     if (item.visualSelector) {
-      const hasMeaningfulVisual = await page.waitForFunction(
+      await page.waitForFunction(
         (selector) =>
           Array.from(document.querySelectorAll(selector)).some((element) => {
             const bounds = element.getBoundingClientRect();
@@ -98,24 +108,13 @@ try {
         item.visualSelector,
         { timeout: 15_000 }
       );
-      const rendered = await hasMeaningfulVisual.jsonValue();
-      if (!rendered) {
-        const sizes = await page.locator(item.visualSelector).evaluateAll((elements) =>
-          elements.some((element) => {
-            const bounds = element.getBoundingClientRect();
-            return bounds.width >= 100 && bounds.height >= 100;
-          })
-        );
-        throw new Error(`${item.path} did not render a meaningful visual element: ${sizes}`);
-      }
     }
   }
 
   console.log(`Smoke checked ${pages.length} static pages at ${baseUrl}`);
-} catch (error) {
-  console.error(serverOutput);
-  throw error;
 } finally {
   await browser?.close();
-  server.kill("SIGTERM");
+  await new Promise((resolve, reject) => {
+    server.close((error) => (error ? reject(error) : resolve()));
+  });
 }
