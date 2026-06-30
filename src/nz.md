@@ -1,91 +1,50 @@
-# New Zealand Records
+# New Zealand Aggregate
 
-New Zealand currently has local benchmark entries in the compiled sample. These are not official Michelin Guide New Zealand awards.
+This page shows only aggregate New Zealand benchmark metrics. It intentionally does not publish individual restaurant names, reviews, coordinates, or row-level source records.
 
 ```js
-const reviews = await FileAttachment("data/community_reviews.json").json();
-const allRestaurants = await FileAttachment("data/restaurants.json").json();
-const restaurants = allRestaurants
-  .filter((d) => d.country === "NZL")
-  .toSorted((a, b) => b.stars - a.stars || a.name.localeCompare(b.name));
-
-const minStars = view(Inputs.range([1, 3], {step: 1, label: "Minimum stars", value: 1}));
-const locations = ["All", ...new Set(restaurants.map((d) => d.location).sort())];
-const location = view(Inputs.select(locations, {label: "Location", value: "All"}));
-const visibleRestaurants = restaurants
-  .filter((d) => d.stars >= minStars)
-  .filter((d) => location === "All" || d.location === location);
+const countryMetrics = await FileAttachment("data/country_metrics.json").json();
+const nz = countryMetrics.find((d) => d.country === "NZL");
+const peers = countryMetrics.filter((d) => d.country !== "NZL").toSorted((a, b) => b.stars_per_100k - a.stars_per_100k);
 ```
 
 ```js
-display(html`<div class="summary-row">
-  <div><strong>${visibleRestaurants.length}</strong><span>visible records</span></div>
-  <div><strong>${visibleRestaurants.reduce((sum, d) => sum + d.stars, 0)}</strong><span>visible stars</span></div>
-  <div><strong>${new Set(visibleRestaurants.map((d) => d.location)).size}</strong><span>locations</span></div>
+display(html`<div class="kpi-grid">
+  <div class="metric-card"><span>Aggregate Records</span><strong>${nz.total_restaurants}</strong><small>count only</small></div>
+  <div class="metric-card"><span>Aggregate Stars</span><strong>${nz.total_stars}</strong><small>count only</small></div>
+  <div class="metric-card"><span>Stars per 100k</span><strong>${nz.stars_per_100k.toFixed(3)}</strong><small>population-normalised</small></div>
+  <div class="metric-card"><span>Stars per $10B GDP</span><strong>${nz.stars_per_10b_gdp.toFixed(3)}</strong><small>GDP-normalised</small></div>
 </div>`);
 ```
 
 ```js
 display(Plot.plot({
-  height: 320,
-  marginLeft: 110,
   theme: "dark",
-  x: {grid: true, label: "Stars"},
+  height: 360,
+  marginLeft: 120,
+  x: {grid: true, label: "Stars per 100k residents"},
   y: {label: null},
   marks: [
     Plot.ruleX([0]),
-    Plot.barX(visibleRestaurants.toSorted((a, b) => a.stars - b.stars), {
-      x: "stars",
-      y: "name",
-      fill: "location",
-      title: (d) => `${d.name}\n${d.location}\n${d.type}`
+    Plot.barX([nz, ...peers].toSorted((a, b) => a.stars_per_100k - b.stars_per_100k), {
+      x: "stars_per_100k",
+      y: "country_name",
+      fill: (d) => d.country === "NZL" ? "#fbbf24" : "#38bdf8",
+      title: (d) => `${d.country_name}\nStars/100k: ${d.stars_per_100k.toFixed(4)}`
     }),
-    Plot.text(visibleRestaurants, {
-      x: "stars",
-      y: "name",
-      text: (d) => "star".repeat(0) || d.stars,
-      dx: 8,
+    Plot.text([nz, ...peers], {
+      x: "stars_per_100k",
+      y: "country_name",
+      text: (d) => d.stars_per_100k.toFixed(3),
+      dx: 6,
       fill: "#e2e8f0"
     })
   ]
 }));
 ```
 
-## Records And Links
-
-The table exposes the compiled local fields used elsewhere in the dashboard. Map links are generated from latitude and longitude only; review links are counted from community JSON submissions in this repository.
-
-```js
-display(Inputs.table(visibleRestaurants.map((r) => ({
-  name: r.name,
-  location: r.location,
-  stars: r.stars,
-  type: r.type,
-  google_maps: `https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lng}`,
-  openstreetmap: `https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=17/${r.lat}/${r.lng}`,
-  community_reviews: reviews.filter((review) => review.restaurantId === r.id).length
-}))));
-```
-
-```js
-display(html`<div class="dashboard-grid">
-  ${visibleRestaurants.map((r) => html`<div class="card compact-card">
-    <div class="card-heading">
-      <h3>${r.name}</h3>
-      <span class="star-rating">${"★".repeat(r.stars)}</span>
-    </div>
-    <p>${r.type}</p>
-    <p><strong>${r.location}</strong></p>
-    <p class="link-row">
-      <a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lng}">Google Maps</a>
-      <a target="_blank" href="https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=17/${r.lat}/${r.lng}">OpenStreetMap</a>
-    </p>
-  </div>`)}
-</div>`);
-```
-
 ## Interpretation Notes
 
-- These entries are local benchmark records, not a claim that Michelin currently awards stars in New Zealand.
-- The star-like score is a dashboard normalization input used for cross-country calculations.
-- If this project is used publicly, the local source and permission basis for each New Zealand record should be documented before treating the data as production-grade.
+- The New Zealand values are aggregate benchmark inputs, not official Michelin Guide New Zealand awards.
+- The page does not redistribute individual Michelin-derived or review-derived records.
+- A production version should attach source notes and permissions to each aggregate input before public release.

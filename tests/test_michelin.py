@@ -1,6 +1,5 @@
 # ruff: noqa
 import io
-import json
 import os
 import sys
 
@@ -8,72 +7,28 @@ import polars as pl
 from hypothesis import given
 from hypothesis import strategies as st
 
-# Set path wrapper to import data module
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src/data")))
 import michelin
-import reviews_aggregator
 
 
 class MockResponse:
-    def __init__(self, text_data, json_data, status_code=200):
-        self.text = text_data
+    def __init__(self, json_data):
         self.json_data = json_data
-        self.status_code = status_code
-
-    def raise_for_status(self):
-        if self.status_code != 200:
-            raise Exception("HTTP Error")
 
     def json(self):
         return self.json_data
 
-def test_fetch_with_cache_success(monkeypatch, tmp_path):
-    """Test fetch caching matches correctly on requests success."""
-    monkeypatch.setattr(michelin, "CACHE_DIR", str(tmp_path))
 
-    mock_html = "<div class='card-restaurant'><span class='card-restaurant__title'>Test Food</span><span class='card-restaurant__location'>Akl</span></div>"
-    monkeypatch.setattr("requests.get", lambda url, headers, timeout: MockResponse(mock_html, {}))
-
-    res = michelin.fetch_with_cache("https://example.com/test", "test.html")
-    assert res == mock_html
-    monkeypatch.setattr("requests.get", lambda url, headers, timeout: None)
-    res_cached = michelin.fetch_with_cache("https://example.com/test", "test.html")
-    assert res_cached == mock_html
-
-def test_fetch_with_cache_failure(monkeypatch, tmp_path):
-    """Test cache fetch exceptions fall back clean."""
-    monkeypatch.setattr(michelin, "CACHE_DIR", str(tmp_path))
-    def raise_error(url, headers, timeout):
-        raise Exception("Network blocked")
-    monkeypatch.setattr("requests.get", raise_error)
-
-    res = michelin.fetch_with_cache("https://example.com/test", "failed.html")
-    assert res == ""
-
-def test_nz_scraped_restaurants_fallback():
-    """Verify that NZ scraper fallback list generates a valid DataFrame with required attributes."""
-    df = michelin.get_nz_scraped_restaurants()
+def test_aggregate_indicator_inputs_are_country_level_only():
+    """Verify that aggregate inputs do not expose row-level restaurant fields."""
+    df = michelin.get_aggregate_indicator_inputs()
     assert isinstance(df, pl.DataFrame)
-    assert not df.is_empty()
-    assert "name" in df.columns
-    assert "stars" in df.columns
-    assert "lat" in df.columns
-    assert "lng" in df.columns
+    assert set(df.columns) == {"country", "total_restaurants", "total_stars"}
+    assert "name" not in df.columns
+    assert "lat" not in df.columns
+    assert "lng" not in df.columns
+    assert df["total_stars"].sum() > 0
 
-def test_nz_scraped_restaurants_parsing(monkeypatch, tmp_path):
-    """Test restaurant parsing from mocked DOM HTML contents."""
-    monkeypatch.setattr(michelin, "CACHE_DIR", str(tmp_path))
-    mock_html = """
-    <div class="card-restaurant">
-      <div class="card-restaurant__title">Auckland Eatery</div>
-      <div class="card-restaurant__location">Auckland CBD</div>
-    </div>
-    """
-    monkeypatch.setattr("requests.get", lambda url, headers, timeout: MockResponse(mock_html, {}))
-    df = michelin.get_nz_scraped_restaurants()
-    assert isinstance(df, pl.DataFrame)
-    assert not df.is_empty()
-    assert df["name"][0] == "Auckland Eatery"
 
 def test_world_bank_data_fallback():
     """Verify that World Bank fallback matches standard expected schemas."""
@@ -82,6 +37,7 @@ def test_world_bank_data_fallback():
     assert not df.is_empty()
     assert "population" in df.columns
     assert "gdp" in df.columns
+
 
 def test_world_bank_data_api_success(monkeypatch):
     """Verify that World Bank API downloads join correctly."""
@@ -96,8 +52,8 @@ def test_world_bank_data_api_success(monkeypatch):
 
     def mock_get(url, timeout):
         if "SP.POP.TOTL" in url:
-            return MockResponse("", mock_pop)
-        return MockResponse("", mock_gdp)
+            return MockResponse(mock_pop)
+        return MockResponse(mock_gdp)
 
     monkeypatch.setattr("requests.get", mock_get)
     df = michelin.get_world_bank_data()
@@ -105,20 +61,34 @@ def test_world_bank_data_api_success(monkeypatch):
     assert not df.is_empty()
     assert "NZL" in df["country"].to_list()
 
-def test_world_bank_data_api_failure(monkeypatch):
-    """Verify that World Bank downloads fall back on exceptions cleanly."""
-    def raise_error(url, timeout):
-        raise Exception("API Limit exceeded")
-    monkeypatch.setattr("requests.get", raise_error)
 
+def test_world_bank_data_api_failure(monkeypatch):
+    """Verify that World Bank downloads fall back on archive data."""
+    def raise_error(url, timeout):
+        raise Exception("API limit exceeded")
+
+    monkeypatch.setattr("requests.get", raise_error)
     df = michelin.get_world_bank_data()
     assert isinstance(df, pl.DataFrame)
     assert not df.is_empty()
     assert "NZL" in df["country"].to_list()
 
-def test_main_execution(monkeypatch, tmp_path):
-    """Execute main mapping entrypoint compiling data and verify output stream."""
-    monkeypatch.setattr(michelin, "CACHE_DIR", str(tmp_path))
+
+def test_build_country_metrics_contains_only_aggregate_columns():
+    """Verify that country metrics are aggregate-only and derived safely."""
+    df = michelin.build_country_metrics()
+    assert isinstance(df, pl.DataFrame)
+    assert not df.is_empty()
+    assert "stars_per_100k" in df.columns
+    assert "stars_per_10b_gdp" in df.columns
+    assert "gdp_per_capita" in df.columns
+    assert "name" not in df.columns
+    assert "lat" not in df.columns
+    assert "lng" not in df.columns
+
+
+def test_main_execution(monkeypatch):
+    """Execute main compiling aggregate metrics and verify output stream."""
     out_buffer = io.BytesIO()
     monkeypatch.setattr(sys.stdout.buffer, "write", out_buffer.write)
 
@@ -128,33 +98,8 @@ def test_main_execution(monkeypatch, tmp_path):
     df = pl.read_parquet(io.BytesIO(out_buffer.getvalue()))
     assert isinstance(df, pl.DataFrame)
     assert "stars_per_100k" in df.columns
+    assert "name" not in df.columns
 
-def test_reviews_aggregator_parsing(tmp_path, monkeypatch):
-    """Verify that the blogger JSON compiler gathers files successfully and compiles unified database."""
-    monkeypatch.setattr(reviews_aggregator, "os", os)
-    reviews_dir = tmp_path / "reviews"
-    reviews_dir.mkdir()
-
-    review_data = {
-      "restaurantId": "test-id",
-      "author": "Food Critic",
-      "rating": "4.5",
-      "content": "Excellent meal",
-      "link": "https://example.com",
-    }
-    with open(reviews_dir / "test.json", "w", encoding="utf-8") as f:
-        json.dump(review_data, f)
-
-    monkeypatch.setattr(reviews_aggregator, "__file__", os.path.join(tmp_path, "reviews_aggregator.py"))
-    reviews_aggregator.main()
-
-    output_json = tmp_path / "community_reviews.json"
-    assert output_json.exists()
-    with open(output_json, encoding="utf-8") as f:
-        compiled_data = json.load(f)
-
-    assert len(compiled_data) == 1
-    assert compiled_data[0]["restaurantId"] == "test-id"
 
 @given(
     population=st.floats(min_value=1.0, max_value=2e9, allow_nan=False, allow_infinity=False),
@@ -181,4 +126,3 @@ def test_calculation_boundaries(population, gdp, stars):
     assert df_raw["gdp_per_capita"][0] >= 0
     assert df_raw["stars_per_10b_gdp"][0] >= 0
     assert not df_raw.null_count().select(pl.all().sum()).row(0)[0] > 0
-

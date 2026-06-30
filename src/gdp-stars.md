@@ -1,6 +1,6 @@
 # GDP & Stars Analysis
 
-Compare compiled restaurant indicators against population and GDP. The controls below update both the chart and the table.
+Compare compiled aggregate gastronomy indicators against population and GDP. The controls below update both the chart and the table.
 
 ```js
 const countryMetrics = await FileAttachment("data/country_metrics.json").json();
@@ -9,7 +9,7 @@ const measureOptions = new Map([
   ["stars_per_100k", "Stars per 100k residents"],
   ["stars_per_10b_gdp", "Stars per $10B GDP"],
   ["total_stars", "Total stars"],
-  ["total_restaurants", "Restaurant records"],
+  ["total_restaurants", "Aggregate records"],
   ["gdp_per_capita", "GDP per capita"]
 ]);
 
@@ -39,7 +39,7 @@ const queryResults = countryMetrics
 ```js
 display(html`<div class="summary-row">
   <div><strong>${queryResults.length}</strong><span>countries selected</span></div>
-  <div><strong>${queryResults.reduce((sum, d) => sum + d.total_restaurants, 0)}</strong><span>restaurant records</span></div>
+  <div><strong>${queryResults.reduce((sum, d) => sum + d.total_restaurants, 0)}</strong><span>aggregate records</span></div>
   <div><strong>${queryResults.reduce((sum, d) => sum + d.total_stars, 0)}</strong><span>total stars</span></div>
 </div>`);
 ```

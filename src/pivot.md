@@ -4,7 +4,6 @@ Choose the country set, row grouping, and measure to inspect the compiled dashbo
 
 ```js
 const countryMetrics = await FileAttachment("data/country_metrics.json").json();
-const restaurants = await FileAttachment("data/restaurants.json").json();
 
 const countryOptions = ["All", ...countryMetrics.map((d) => d.country_name).sort((a, b) => a.localeCompare(b))];
 const selectedCountries = view(Inputs.checkbox(countryOptions, {
@@ -16,7 +15,7 @@ const rowDimension = view(Inputs.select(
   [
     ["country_name", "Country"],
     ["country", "Country code"],
-    ["source", "Source type"]
+    ["coverage_bucket", "Coverage bucket"]
   ],
   {label: "Rows", value: "country_name"}
 ));
@@ -24,7 +23,7 @@ const rowDimension = view(Inputs.select(
 const measure = view(Inputs.select(
   [
     ["total_stars", "Total stars"],
-    ["total_restaurants", "Total restaurants"],
+    ["total_restaurants", "Total aggregate records"],
     ["stars_per_100k", "Stars per 100k residents"],
     ["stars_per_10b_gdp", "Stars per $10B GDP"],
     ["gdp_per_capita", "GDP per capita"],
@@ -51,26 +50,10 @@ const selectedCountrySet = new Set(selectedCountries.includes("All")
 
 const metricRows = countryMetrics
   .filter((d) => selectedCountrySet.has(d.country_name))
-  .map((d) => ({...d, source: "Country metrics"}));
-
-const restaurantCounts = restaurants
-  .filter((d) => metricRows.some((m) => m.country === d.country))
   .map((d) => ({
-    country: d.country,
-    country_name: countryMetrics.find((m) => m.country === d.country)?.country_name ?? d.country,
-    source: "Restaurant records",
-    total_stars: d.stars,
-    total_restaurants: 1,
-    stars_per_100k: null,
-    stars_per_10b_gdp: null,
-    gdp_per_capita: null,
-    population: null,
-    gdp: null
+    ...d,
+    coverage_bucket: d.total_stars >= 10 ? "10+ aggregate stars" : "1-9 aggregate stars"
   }));
-
-const sourceRows = rowDimension === "source"
-  ? [...metricRows, ...restaurantCounts]
-  : metricRows;
 
 function aggregate(values, mode) {
   const numericValues = values.filter((value) => Number.isFinite(value));
@@ -81,7 +64,7 @@ function aggregate(values, mode) {
 }
 
 const groupedRows = Array.from(
-  Map.groupBy(sourceRows, (d) => d[rowDimension]),
+  Map.groupBy(metricRows, (d) => d[rowDimension]),
   ([group, rows]) => ({
     [rowDimension]: group,
     records: rows.length,

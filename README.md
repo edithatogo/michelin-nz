@@ -15,7 +15,7 @@ pinned: false
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/)
 
-A static Observable dashboard for gastronomy data analysis that visualizes selected Michelin Guide-style restaurant indicators alongside population, GDP, and geographic context.
+A static Observable dashboard for gastronomy data analysis that visualizes aggregate Michelin Guide-style indicators alongside population, GDP, and geographic context.
 
 Live Demo: [Hugging Face Spaces](https://huggingface.co/spaces/edithatogo/michelin-nz)  
 Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
@@ -25,7 +25,7 @@ Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
 ## ⚖️ Data Ownership & Citation
 
 > [!IMPORTANT]
-> **Data Ownership Disclaimer:** Michelin Guide names, distinctions, ratings, text, branding, and related database rights are owned by **Manufacture Française des Pneumatiques Michelin (Michelin Group)** or its licensors. This repository's MIT license applies to the dashboard code only; it does not license Michelin-derived data. Do not redistribute a comprehensive scraped Michelin database from this repository without confirming permission or another valid legal basis.
+> **Data Ownership Disclaimer:** Michelin Guide names, distinctions, ratings, text, branding, and related database rights are owned by **Manufacture Française des Pneumatiques Michelin (Michelin Group)** or its licensors. This repository's MIT license applies to the dashboard code only; it does not license Michelin-derived data. The public dashboard redistributes aggregate metrics and derived analysis only, not individual Michelin-derived rows, reviews, coordinates, or a guide-like database.
 >
 > World Bank indicators are reused from World Bank Open Data and require source attribution under the World Bank dataset terms.
 
@@ -59,7 +59,7 @@ See [Release Checklist](docs/release-checklist.md) before publishing DOI-bearing
 
 - **Core Engine:** [Observable Framework](https://observablehq.com/framework/) - Static site generator optimized for data-dense dashboards.
 - **Visualization:** [Observable Plot](https://observablehq.com/plot/) renders deterministic SVG charts that are covered by headless deployment smoke tests.
-- **Build-Time Data Pipeline:** Python loaders compile selected restaurant records, World Bank demographics, and GDP indicators into JSON and Parquet assets at build time.
+- **Build-Time Data Pipeline:** Python loaders compile aggregate gastronomy indicators, World Bank demographics, and GDP indicators into JSON and Parquet assets at build time.
 - **Interactive Analysis:** Observable Inputs provide country filters, measure selectors, aggregation controls, and data tables.
 
 ---
@@ -95,17 +95,14 @@ See [Release Checklist](docs/release-checklist.md) before publishing DOI-bearing
 ## 📂 Project Structure
 
 - `src/` - Observable Framework markdown and styles.
-- `src/data/` - Build-time data loaders (`michelin.parquet.sh`, `michelin.py`).
-- `src/data/reviews/` - Community blog review submissions (`.json` format).
+- `src/data/` - Build-time aggregate metric loaders (`michelin.parquet.sh`, `michelin.py`).
 - `conductor/` - Conductor project setup, specs, and workflow guidelines.
 
 ---
 
 ## 🤝 How to Contribute
 
-We welcome community contributions, particularly from food bloggers, critics, and data enthusiasts:
-1. Refer to [CONTRIBUTING.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/CONTRIBUTING.md) to submit pull requests for new restaurant listings or blog reviews.
-2. Read the methodology and data matching rules inside the dashboard overlays.
+We welcome community contributions for methodology, aggregate source documentation, and dashboard improvements. Do not submit individual Michelin-derived restaurant listings, guide text, reviews, photos, or proprietary metadata.
 
 ---
 

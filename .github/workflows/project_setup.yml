@@ -21,7 +21,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh repo edit $GITHUB_REPOSITORY --description "Open-source gastronomy data science dashboard analyzing Michelin star distributions and macro-economic correlations." --homepage "https://huggingface.co/spaces/edithatogo/michelin-nz" --add-topic "data-science,gastronomy,dashboard,polars,observablehq,python,michelin-stars,open-source" || echo "Repository metadata update requires an admin-scoped token; continuing."
+          gh repo edit $GITHUB_REPOSITORY --description "Observable dashboard for aggregate gastronomy indicators, population, and GDP analysis." --homepage "https://huggingface.co/spaces/edithatogo/michelin-nz" --add-topic "data-science,gastronomy,dashboard,polars,observablehq,python,aggregate-analysis" || echo "Repository metadata update requires an admin-scoped token; continuing."
 
       - name: Create or Update Release v1.0.0
         env:
@@ -33,5 +33,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh issue create --title "Implement advanced visualizations for GDP vs Michelin Stars" --body "As per the MoSCoW spec, we need to add more advanced visual correlations." || echo "Issue already created"
+          gh issue create --title "Improve aggregate GDP and gastronomy indicator visualizations" --body "Add more aggregate-only visual correlations and source provenance notes." || echo "Issue already created"
           gh issue create --title "Investigate additional API data sources for gastronomy" --body "We should add more datasets to enrich the analysis." || echo "Issue already created"

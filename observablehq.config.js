@@ -7,16 +7,8 @@ export default {
   // or structure your dashboard, list pages here.
   pages: [
     {
-      name: "NZ Analysis",
+      name: "NZ Aggregate",
       path: "/nz"
-    },
-    {
-      name: "Global Map",
-      path: "/global-map"
-    },
-    {
-      name: "Chef Network",
-      path: "/network"
     },
     {
       name: "GDP & Stars",

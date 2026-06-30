@@ -1,7 +1,0 @@
-[
-  {"name": "Hiakai", "location": "Wellington", "country": "NZL", "stars": 3, "lat": -41.3015, "lng": 174.7797},
-  {"name": "The Grove", "location": "Auckland", "country": "NZL", "stars": 2, "lat": -36.8485, "lng": 174.7633},
-  {"name": "Amisfield", "location": "Queenstown", "country": "NZL", "stars": 3, "lat": -44.9816, "lng": 168.8142},
-  {"name": "Logan Brown", "location": "Wellington", "country": "NZL", "stars": 1, "lat": -41.2924, "lng": 174.7745},
-  {"name": "Sidart", "location": "Auckland", "country": "NZL", "stars": 2, "lat": -36.8587, "lng": 174.7431}
-]
