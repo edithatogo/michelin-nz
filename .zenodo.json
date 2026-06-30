@@ -1,5 +1,8 @@
 {
   "title": "Michelin Star Per-Capita Dashboard",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "publication_date": "2026-06-30",
   "description": "A visually stunning dashboard for open-source gastronomy data science correlating Michelin-starred restaurants against GDP and population metrics.",
   "creators": [
     {

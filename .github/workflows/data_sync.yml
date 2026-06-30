@@ -11,6 +11,8 @@ on:
 jobs:
   sync_and_deploy:
     runs-on: ubuntu-latest
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -30,12 +32,14 @@ jobs:
       - name: Create Python Virtual Environment
         run: |
           python -m venv .venv
-          .venv/bin/pip install polars requests beautifulsoup4 pyarrow
+          .venv/bin/pip install polars requests beautifulsoup4 pyarrow huggingface_hub
 
       - name: Install Node Dependencies
         run: npm ci
 
       - name: Build Project
+        env:
+          OBSERVABLE_TELEMETRY_DISABLE: true
         run: npm run build
 
       - name: Run Playwright Tests
@@ -44,17 +48,27 @@ jobs:
           # Run visual regression verification checks here
 
       - name: Deploy to Hugging Face Spaces
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        if: ${{ env.HF_TOKEN != '' }}
         run: |
-          git config --global user.email "bot@michelin.nz"
-          git config --global user.name "Michelin NZ Bot"
-          git clone https://user:$HF_TOKEN@huggingface.co/spaces/edithatogo/michelin-nz hf-space
-          rm -rf hf-space/*
-          cp -r dist/* hf-space/
-          # Ensure README metadata frontmatter is at root of HF space
-          cp README.md hf-space/
-          cd hf-space
-          git add -A
-          git commit -m "deploy: update open-source gastronomy data science dashboard" || true
-          git push origin main || true
+          test -n "$HF_TOKEN"
+          cp README.md dist/README.md
+          .venv/bin/python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          repo_id = "edithatogo/michelin-nz"
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          api.create_repo(
+              repo_id=repo_id,
+              repo_type="space",
+              space_sdk="static",
+              private=False,
+              exist_ok=True,
+          )
+          api.upload_folder(
+              repo_id=repo_id,
+              repo_type="space",
+              folder_path="dist",
+              commit_message="deploy: update dashboard build",
+          )
+          PY

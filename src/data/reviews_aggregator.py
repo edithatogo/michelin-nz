@@ -2,11 +2,12 @@
 import json
 import os
 import sys
+from typing import Any
 
 
 def main():
     reviews_dir = os.path.join(os.path.dirname(__file__), "reviews")
-    combined_reviews = []
+    combined_reviews: list[Any] = []
 
     if os.path.exists(reviews_dir):
         for filename in os.listdir(reviews_dir):

@@ -7,7 +7,7 @@
     "dev": "observable dev",
     "build": "observable build",
     "preview": "observable preview",
-    "lint": "eslint src/**/*.js || true",
+    "lint": "eslint src --ext .js --no-error-on-unmatched-pattern",
     "format": "prettier --write \"src/**/*.{js,css,md}\"",
     "prepare": "husky || true"
   },

@@ -1,5 +1,15 @@
-#!/bin/bash
-# Force execution using local virtual environment python
-# Resolve project directory relative to script location
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-"$DIR/../../.venv/bin/python3" "$DIR/michelin.py"
+#!/bin/sh
+set -eu
+
+script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+project_root="$(CDPATH= cd -- "$script_dir/../.." && pwd)"
+
+if [ -x "$project_root/.venv/bin/python3" ]; then
+  python_bin="$project_root/.venv/bin/python3"
+elif [ -x "$project_root/.venv/bin/python" ]; then
+  python_bin="$project_root/.venv/bin/python"
+else
+  python_bin="python3"
+fi
+
+"$python_bin" "$script_dir/michelin.py"

@@ -21,7 +21,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh repo edit $GITHUB_REPOSITORY --description "Open-source gastronomy data science dashboard analyzing Michelin star distributions and macro-economic correlations." --homepage "https://huggingface.co/spaces/edithatogo/michelin-nz" --add-topic "data-science,gastronomy,dashboard,polars,observablehq,python,michelin-stars,open-source"
+          gh repo edit $GITHUB_REPOSITORY --description "Open-source gastronomy data science dashboard analyzing Michelin star distributions and macro-economic correlations." --homepage "https://huggingface.co/spaces/edithatogo/michelin-nz" --add-topic "data-science,gastronomy,dashboard,polars,observablehq,python,michelin-stars,open-source" || echo "Repository metadata update requires an admin-scoped token; continuing."
 
       - name: Create or Update Release v1.0.0
         env:

@@ -66,17 +66,22 @@ def run_linters():
     return True
 
 def verify_external_deployments():
+    if os.environ.get("SKIP_EXTERNAL_DEPLOYMENT_CHECK") == "1":
+        print("⏭️ Skipping external deployment checks by environment request.")
+        return True
+
     print("🔍 Validating Hugging Face Spaces status...")
     url = "https://huggingface.co/spaces/edithatogo/michelin-nz"
     try:
         r = requests.get(url, timeout=10)
         if r.status_code != 200:
-            print(f"⚠️ Hugging Face space returned status code: {r.status_code}")
-        else:
-            print("✅ Hugging Face Space landing URL verified.")
+            print(f"❌ Hugging Face space returned status code: {r.status_code}")
+            return False
+        print("✅ Hugging Face Space landing URL verified.")
+        return True
     except Exception as e:
-        print(f"⚠️ Failed to connect to Hugging Face: {e}")
-    return True
+        print(f"❌ Failed to connect to Hugging Face: {e}")
+        return False
 
 def main():
     print("==================================================")

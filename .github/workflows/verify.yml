@@ -36,7 +36,9 @@ jobs:
         run: .venv/bin/pytest --cov=src/data --cov-fail-under=85
 
       - name: Run Repository Programmatic Contract Verification
-        run: python scripts/verify_repo_contract.py
+        env:
+          SKIP_EXTERNAL_DEPLOYMENT_CHECK: "1"
+        run: .venv/bin/python scripts/verify_repo_contract.py
 
       - name: Install Node Dependencies
         run: npm ci
