@@ -38,6 +38,9 @@ jobs:
       - name: Run Python Test Suite (Pytest)
         run: .venv/bin/pytest --cov=src/data --cov-fail-under=90
 
+      - name: Run Repository Programmatic Contract Verification
+        run: python scripts/verify_repo_contract.py
+
       - name: Install Node Dependencies
         run: npm ci
 
