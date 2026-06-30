@@ -27,11 +27,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v1.0.0 --title "Release v1.0.0 - Open-source Gastronomy Data Science Dashboard" --notes "Initial release including Polars data pipeline, Pytest suite, and ObservableHQ static build." || echo "Release already exists"
+          gh release create v1.0.0 --title "Release v1.0.0 - Aggregate Gastronomy Indicator Dashboard" --notes "Initial release including aggregate-only Polars data pipeline, Pytest suite, source/licensing notes, and Observable Framework static build." || echo "Release already exists"
 
       - name: Create Initial Issues
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue create --title "Improve aggregate GDP and gastronomy indicator visualizations" --body "Add more aggregate-only visual correlations and source provenance notes." || echo "Issue already created"
-          gh issue create --title "Investigate additional API data sources for gastronomy" --body "We should add more datasets to enrich the analysis." || echo "Issue already created"
+          gh issue create --title "Review additional aggregate public data sources" --body "Evaluate candidate aggregate-only sources and document redistribution rights before adding any metrics." || echo "Issue already created"
