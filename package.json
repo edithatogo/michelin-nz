@@ -1,0 +1,17 @@
+{
+  "name": "michelin-nz",
+  "version": "1.0.0",
+  "description": "Michelin Star Per-Capita Dashboard",
+  "type": "module",
+  "scripts": {
+    "dev": "observable dev",
+    "build": "observable build",
+    "preview": "observable preview"
+  },
+  "dependencies": {
+    "@observablehq/framework": "^1.13.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

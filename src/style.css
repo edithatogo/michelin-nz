@@ -1,0 +1,52 @@
+/* Custom theme variables for Sleek Dark theme */
+:root {
+  --theme-foreground: #f8fafc;
+  --theme-background: #020617;
+  --theme-background-alt: #0f172a;
+  --theme-border: #1e293b;
+  --theme-accent: #fbbf24; /* Neon gold for stars */
+  --theme-accent-blue: #06b6d4; /* Cyan */
+  --theme-accent-violet: #8b5cf6; /* Violet */
+  --theme-accent-rose: #f43f5e; /* Rose */
+}
+
+/* Enable view transitions for modern tab morph transitions */
+@view-transition {
+  navigation: auto;
+}
+
+body {
+  background-color: var(--theme-background);
+  color: var(--theme-foreground);
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.star-rating {
+  color: var(--theme-accent);
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+  font-weight: bold;
+}

@@ -1,0 +1,11 @@
+# Node dependencies
+node_modules/
+
+# Observable Framework build output
+dist/
+
+# Observable cache folder
+.observablehq/
+
+# Local OS files
+.DS_Store
