@@ -2,12 +2,12 @@
 
 ## Frontend & Visualizations
 * **Core Framework:** [Observable Framework](https://observablehq.com/framework/) - Static site generator designed specifically for data apps, dashboards, and reports. It includes built-in support for data loaders (runs build-time data prep) and features instant routing and page updates.
-* **Visualization Engine:** [Observable Plot](https://observablehq.com/plot/) - High-level declarative charting library for fast, beautiful, and expressive data representation.
-* **GPU Graph Visualizations:** [Cosmograph](https://cosmograph.app/) (cosmos.gl) - Ultra-fast, GPU-accelerated node-link graph layout engine for chef influence and cuisine connection networks.
-* **In-Browser Database & Coordination:** [DuckDB WASM](https://duckdb.org/docs/api/wasm/overview) & [Mosaic / SQLRooms](https://sqlrooms.org/) - Client-side analytical database running queries directly against compressed Parquet assets, coordinated via SQLRooms reactives.
-* **Modular Charts:** [Unovis](https://unovis.dev/) - Framework-independent visualization system for advanced node links, chord charts, and relationship mappings.
-* **GPU Mapping & Acceleration:** [Deck.gl](https://deck.gl/) & [Maplibre GL](https://maplibre.org/) - For WebGPU/WebGL spatial indexing, 3D hexagonal binning, and high-performance zoomable maps of restaurant layouts.
-* **Client-Side Compute Acceleration:** [Rust WebAssembly](https://rustwasm.github.io/docs/book/) - Compiled `.wasm` helpers for client-side geographic clustering and rapid network graph calculations.
+* **Visualization Engines (Non-Redundant):**
+  - [Observable Plot](https://observablehq.com/plot/) - Primary charting library for standard statistical charts (scatters, bars, histograms).
+  - [Cosmograph](https://cosmograph.app/) (cosmos.gl) - Primary GPU-accelerated force layout engine for node-link chef networks.
+  - [Unovis](https://unovis.dev/) - For custom relational representations (chord, cluster relationships) where Observable Plot is insufficient.
+* **In-Browser Database & State Coordination:** [DuckDB WASM](https://duckdb.org/docs/api/wasm/overview) & [SQLRooms](https://sqlrooms.org/) - Unified data client. All client filtering, sorting, and selections execute SQL queries on the loaded Parquet data. All visual components (Plot, Deck.gl, Cosmograph) subscribe to SQLRooms state to prevent state duplication.
+* **GPU Mapping & Acceleration:** [Deck.gl](https://deck.gl/) - Primary mapping interface rendering spatial queries directly from DuckDB. No other standalone mapping engines (like Leaflet) are imported.
 * **AI Assistance:** Hugging Face Inference API client for natural language queries translated to client-side SQL.
 * **Styling:** Vanilla CSS & View Transitions API, styled with custom dark-mode properties aligned with our Sleek Dark theme.
 
