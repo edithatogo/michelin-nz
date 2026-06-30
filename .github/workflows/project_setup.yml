@@ -1,0 +1,37 @@
+name: Project & Release Setup
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  issues: write
+  repository-projects: write
+
+jobs:
+  setup-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Repository Metadata
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh repo edit $GITHUB_REPOSITORY --description "Open-source gastronomy data science dashboard analyzing Michelin star distributions and macro-economic correlations." --homepage "https://huggingface.co/spaces/edithatogo/michelin-nz" --add-topic "data-science,gastronomy,dashboard,polars,observablehq,python,michelin-stars,open-source"
+
+      - name: Create or Update Release v1.0.0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v1.0.0 --title "Release v1.0.0 - Open-source Gastronomy Data Science Dashboard" --notes "Initial release including Polars data pipeline, Pytest suite, and ObservableHQ static build." || echo "Release already exists"
+
+      - name: Create Initial Issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create --title "Implement advanced visualizations for GDP vs Michelin Stars" --body "As per the MoSCoW spec, we need to add more advanced visual correlations." || echo "Issue already created"
+          gh issue create --title "Investigate additional API data sources for gastronomy" --body "We should add more datasets to enrich the analysis." || echo "Issue already created"
