@@ -2,9 +2,9 @@ name: Verify Code Quality & Testing
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   verify:
@@ -17,37 +17,45 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: "npm"
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Python Dependencies
+      - name: Install Pixi
         run: |
-          python -m venv .venv
-          .venv/bin/pip install polars requests beautifulsoup4 pyarrow pytest pytest-cov hypothesis ruff basedpyright
+          curl -fsSL https://pixi.sh/install.sh | bash
+          echo "$HOME/.pixi/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Mojo Toolchain
+        run: |
+          pixi run mojo-version
+          pixi run mojo-format-check
+          pixi run mojo-build
+
+      - name: Run Python Formatter Check (Ruff)
+        run: pixi run format-check
 
       - name: Run Python Linter (Ruff)
-        run: .venv/bin/ruff check src/data/ tests/
+        run: pixi run lint
 
       - name: Run Python Test Suite (Pytest)
-        run: .venv/bin/pytest --cov=src/data --cov-fail-under=85
+        run: pixi run pytest --cov=src/data --cov-fail-under=85
 
       - name: Run Repository Programmatic Contract Verification
-        env:
-          SKIP_EXTERNAL_DEPLOYMENT_CHECK: "1"
-        run: .venv/bin/python scripts/verify_repo_contract.py
+        run: pixi run python scripts/verify_repo_contract.py
 
       - name: Install Node Dependencies
         run: npm ci
 
       - name: Run Python Typechecker (basedpyright)
-        run: npx basedpyright src/data/
+        run: pixi run typecheck
 
       - name: Run Javascript Linter (ESLint)
         run: npm run lint
+
+      - name: Run Javascript Formatter Check (Prettier)
+        run: npm run format:check
+
+      - name: Run NPM Audit
+        run: npm run audit
 
       - name: Compile Dashboard Build
         env:

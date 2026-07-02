@@ -1,28 +1,36 @@
-[project]
+[workspace]
 name = "michelin-nz"
 version = "1.0.0"
 description = "Michelin Star Per-Capita Dashboard Python Tooling"
 authors = ["edithatogo"]
-channels = ["conda-forge"]
+channels = ["conda-forge", "https://conda.modular.com/max"]
 platforms = ["osx-arm64", "linux-64"]
 
 [dependencies]
-python = ">=3.11"
-polars = ">=0.20.0"
-requests = ">=2.30.0"
-pyarrow = ">=12.0.0"
-pytest = ">=7.0.0"
-pytest-cov = ">=4.0.0"
-hypothesis = ">=6.0.0"
-ruff = ">=0.1.0"
-basedpyright = ">=1.0.0"
-mutmut = ">=2.4.0"
-scalene = ">=1.5.0"
+python = ">=3.14,<3.15"
+polars = ">=1.42.1,<2"
+requests = ">=2.34.2,<3"
+pyarrow = ">=24.0.0,<25"
+pytest = ">=9.1.1,<10"
+pytest-cov = ">=7.1.0,<8"
+hypothesis = ">=6.155.7,<7"
+ruff = ">=0.15.20,<0.16"
+basedpyright = ">=1.39.8,<2"
+mutmut = ">=3.5.0,<4"
+scalene = ">=1.5.51,<2"
+mojo = ">=1.0.0b2,<2"
+huggingface_hub = ">=1.3.0,<2"
 
 [tasks]
 test = "pytest"
-lint = "ruff check src/data/"
-format = "ruff format src/data/"
+lint = "ruff check src/data/ tests/ scripts/verify_repo_contract.py scripts/check_external_deployments.py"
+format = "ruff format src/data/ scripts/verify_repo_contract.py scripts/check_external_deployments.py"
+format-check = "ruff format --check src/data/ scripts/verify_repo_contract.py scripts/check_external_deployments.py"
 typecheck = "basedpyright src/data/"
 mutate = "mutmut run"
 profile = "scalene src/data/michelin.py"
+mojo-version = "mojo --version"
+mojo-metrics = "mojo src/data/metrics.mojo 5228100 253000000000 11"
+mojo-format = "mojo format src/data/metrics.mojo"
+mojo-format-check = "mojo format src/data/metrics.mojo && git diff --exit-code -- src/data/metrics.mojo"
+mojo-build = "mojo build src/data/metrics.mojo -o /tmp/michelin-nz-metrics"

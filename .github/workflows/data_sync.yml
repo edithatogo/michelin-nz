@@ -2,10 +2,10 @@ name: Scheduled Data Sync & Deployment
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   schedule:
     # Runs at 00:00 UTC daily
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 jobs:
@@ -21,21 +21,35 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: "npm"
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Create Python Virtual Environment
+      - name: Install Pixi
         run: |
-          python -m venv .venv
-          .venv/bin/pip install polars requests beautifulsoup4 pyarrow huggingface_hub
+          curl -fsSL https://pixi.sh/install.sh | bash
+          echo "$HOME/.pixi/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Python and Mojo Toolchain
+        run: |
+          pixi run python --version
+          pixi run mojo-version
+          pixi run mojo-format-check
+          pixi run mojo-build
 
       - name: Install Node Dependencies
         run: npm ci
+
+      - name: Run Strict Python Quality Gates
+        run: |
+          pixi run format-check
+          pixi run lint
+          pixi run pytest --cov=src/data --cov-fail-under=85
+          pixi run typecheck
+
+      - name: Run Strict JavaScript Quality Gates
+        run: |
+          npm run lint
+          npm run format:check
+          npm run audit
 
       - name: Build Project
         env:
@@ -49,11 +63,11 @@ jobs:
         run: npm run smoke:dist
 
       - name: Deploy to Hugging Face Spaces
-        if: ${{ env.HF_TOKEN != '' }}
         run: |
+          set -euo pipefail
           test -n "$HF_TOKEN"
           cp README.md dist/README.md
-          .venv/bin/python - <<'PY'
+          pixi run python - <<'PY'
           import os
           from huggingface_hub import HfApi
 

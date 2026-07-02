@@ -7,7 +7,7 @@ export default [
   js.configs.recommended,
   {
     rules: {
-      "no-unused-vars": "warn",
+      "no-unused-vars": "error",
       "no-undef": "error"
     },
     languageOptions: {
@@ -17,6 +17,8 @@ export default [
         window: "readonly",
         document: "readonly",
         console: "readonly",
+        process: "readonly",
+        URL: "readonly",
         FileAttachment: "readonly",
         html: "readonly",
         display: "readonly",

@@ -1,5 +1,5 @@
 [tool.ruff]
-target-version = "py311"
+target-version = "py314"
 line-length = 100
 
 [tool.ruff.lint]
@@ -18,15 +18,15 @@ select = [
     "PL",       # pylint
     "RUF"       # ruff-specific rules
 ]
-ignore = []
+ignore = ["COM812"]
 
 [tool.basedpyright]
 typeCheckingMode = "strict"
-pythonVersion = "3.11"
-reportMissingTypeStubs = "warning"
-reportUnknownMemberType = "none" # Allow Pandas untyped members
-reportUnknownVariableType = "none"
+pythonVersion = "3.14"
+reportMissingTypeStubs = "error"
+reportUnknownMemberType = "error"
+reportUnknownVariableType = "error"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=src/data --cov-report=term-missing"
+addopts = "--cov=src/data --cov-report=term-missing --cov-fail-under=85"

@@ -10,12 +10,14 @@ const dataVersion = await FileAttachment("data/version.json").json();
 ```
 
 ```js
-display(html`<div class="card" style="margin-bottom: 1.5rem;">
-  <h3>📦 Dataset Versioning Details</h3>
-  <p><strong>Database Version:</strong> <code>${dataVersion.version}</code></p>
-  <p><strong>Last Compiled:</strong> <code>${dataVersion.compiled}</code></p>
-  <p><strong>Public artifact boundary:</strong> aggregate country metrics only.</p>
-</div>`);
+display(
+  html`<div class="card" style="margin-bottom: 1.5rem;">
+    <h3>📦 Dataset Versioning Details</h3>
+    <p><strong>Database Version:</strong> <code>${dataVersion.version}</code></p>
+    <p><strong>Last Compiled:</strong> <code>${dataVersion.compiled}</code></p>
+    <p><strong>Public artifact boundary:</strong> aggregate country metrics only.</p>
+  </div>`
+);
 ```
 
 ```js

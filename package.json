@@ -7,10 +7,12 @@
     "dev": "observable dev",
     "build": "observable build",
     "preview": "observable preview",
-    "lint": "eslint src --ext .js --no-error-on-unmatched-pattern",
+    "lint": "eslint eslint.config.js observablehq.config.js scripts/**/*.mjs --max-warnings=0",
+    "audit": "npm audit --audit-level=low",
     "smoke:dist": "node scripts/smoke_static_site.mjs",
-    "format": "prettier --write \"src/**/*.{js,css,md}\"",
-    "prepare": "husky || true"
+    "format": "prettier --write \"README.md\" \"docs/**/*.md\" \".github/workflows/*.yml\" \"src/**/*.{js,css,md}\" \"*.{json,js}\" \"scripts/**/*.mjs\"",
+    "format:check": "prettier --check \"README.md\" \"docs/**/*.md\" \".github/workflows/*.yml\" \"src/**/*.{js,css,md}\" \"*.{json,js}\" \"scripts/**/*.mjs\"",
+    "prepare": "husky"
   },
   "dependencies": {
     "@observablehq/framework": "1.13.4"
@@ -19,17 +21,17 @@
     "esbuild": "0.28.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.61.1",
-    "eslint": "^9.0.0",
-    "husky": "^9.0.0",
-    "lint-staged": "^15.0.0",
-    "prettier": "^3.0.0",
-    "typescript": "^5.0.0"
+    "eslint": "^10.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.9.4",
+    "typescript": "^6.0.3"
   },
   "lint-staged": {
     "src/**/*.{js,css}": [
-      "eslint --fix",
+      "eslint --fix --max-warnings=0",
       "prettier --write"
     ]
   }

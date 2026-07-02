@@ -2,7 +2,7 @@ name: Project & Release Setup
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch: # Allow manual trigger
 
 permissions:
@@ -21,17 +21,33 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh repo edit $GITHUB_REPOSITORY --description "Observable dashboard for aggregate gastronomy indicators, population, and GDP analysis." --homepage "https://huggingface.co/spaces/edithatogo/michelin-nz" --add-topic "data-science,gastronomy,dashboard,polars,observablehq,python,aggregate-analysis" || echo "Repository metadata update requires an admin-scoped token; continuing."
+          set -euo pipefail
+          gh repo edit "$GITHUB_REPOSITORY" \
+            --description "Observable dashboard for aggregate gastronomy indicators, population, and GDP analysis." \
+            --homepage "https://huggingface.co/spaces/edithatogo/michelin-nz" \
+            --add-topic "data-science,gastronomy,dashboard,polars,observablehq,python,mojo,aggregate-analysis"
 
       - name: Create or Update Release v1.0.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v1.0.0 --title "Release v1.0.0 - Aggregate Gastronomy Indicator Dashboard" --notes "Initial release including aggregate-only Polars data pipeline, Pytest suite, source/licensing notes, and Observable Framework static build." || echo "Release already exists"
+          set -euo pipefail
+          if ! gh release view v1.0.0 >/dev/null 2>&1; then
+            gh release create v1.0.0 \
+              --title "Release v1.0.0 - Aggregate Gastronomy Indicator Dashboard" \
+              --notes "Initial release including aggregate-only Polars data pipeline, Mojo metric backend, Pytest suite, source/licensing notes, and Observable Framework static build."
+          fi
 
       - name: Create Initial Issues
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh issue create --title "Improve aggregate GDP and gastronomy indicator visualizations" --body "Add more aggregate-only visual correlations and source provenance notes." || echo "Issue already created"
-          gh issue create --title "Review additional aggregate public data sources" --body "Evaluate candidate aggregate-only sources and document redistribution rights before adding any metrics." || echo "Issue already created"
+          set -euo pipefail
+          first_title="Improve aggregate GDP and gastronomy indicator visualizations"
+          second_title="Review additional aggregate public data sources"
+          if [ "$(gh issue list --state all --search "$first_title in:title" --json number --jq 'length')" -eq 0 ]; then
+            gh issue create --title "$first_title" --body "Add more aggregate-only visual correlations and source provenance notes."
+          fi
+          if [ "$(gh issue list --state all --search "$second_title in:title" --json number --jq 'length')" -eq 0 ]; then
+            gh issue create --title "$second_title" --body "Evaluate candidate aggregate-only sources and document redistribution rights before adding any metrics."
+          fi

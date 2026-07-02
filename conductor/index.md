@@ -10,7 +10,10 @@
 * [Development Workflow](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/workflow.md)
 
 ## Active Tracks
-* *All tracks completed.*
+* [Michelin Star Country Coverage and Aggregate Data Completeness](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/data_coverage_20260703/index.md)
+* [Global Choropleth and New Zealand Location-Safe Visualisation](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/geo_outcomes_20260703/index.md)
+* [Live Deployment and Repository Quality Scorecard](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/live_quality_score_20260703/index.md)
+* [Experimental Mojo Data Processing Migration](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/mojo_migration_20260703/index.md)
 * **All Tracks Index:** [Tracks Index](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/index.md)
 
 ## Code Style Guides

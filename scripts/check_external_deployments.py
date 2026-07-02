@@ -11,6 +11,8 @@ HF_SPACE = os.environ.get("HF_SPACE", "edithatogo/michelin-nz")
 EXPECTED_TITLE = "Michelin Star Per-Capita Dashboard"
 HTTP_OK = 200
 HTTP_BAD_REQUEST = 400
+REQUIRE_GITHUB_RELEASE = os.environ.get("REQUIRE_GITHUB_RELEASE", "1") == "1"
+REQUIRE_ZENODO = os.environ.get("REQUIRE_ZENODO", "1") == "1"
 
 
 def get_json(url: str) -> tuple[int, object]:
@@ -23,7 +25,7 @@ def get_json(url: str) -> tuple[int, object]:
 
 
 def check_github() -> bool:
-    print("Checking GitHub repository and release...")
+    print("Checking GitHub repository and latest release...")
     repo_url = f"https://api.github.com/repos/{GITHUB_REPO}"
     status, repo = get_json(repo_url)
     if status != HTTP_OK or not isinstance(repo, dict):
@@ -33,6 +35,11 @@ def check_github() -> bool:
     release_url = f"{repo_url}/releases/latest"
     release_status, release = get_json(release_url)
     if release_status != HTTP_OK or not isinstance(release, dict):
+        if not REQUIRE_GITHUB_RELEASE:
+            print(
+                f"WARN GitHub latest release API returned {release_status}; release gate optional",
+            )
+            return True
         print(f"FAIL GitHub latest release API returned {release_status}")
         return False
 
@@ -81,18 +88,16 @@ def check_zenodo() -> bool:
         hit
         for hit in hits
         if isinstance(hit, dict)
-        and EXPECTED_TITLE.lower()
-        in json.dumps(hit.get("metadata", {}), sort_keys=True).lower()
+        and EXPECTED_TITLE.lower() in json.dumps(hit.get("metadata", {}), sort_keys=True).lower()
     ]
     if not matching:
-        print("FAIL No Zenodo record found for this repository/title")
-        return False
+        message = "No Zenodo record found for this repository/title"
+        return report_optional_zenodo_result(message)
 
     record = matching[0]
     doi = record.get("doi") or record.get("metadata", {}).get("doi")
     if not doi:
-        print("FAIL Zenodo record exists but has no DOI")
-        return False
+        return report_optional_zenodo_result("Zenodo record exists but has no DOI")
 
     doi_response = requests.get(f"https://doi.org/{doi}", timeout=20)
     if doi_response.status_code >= HTTP_BAD_REQUEST:
@@ -101,6 +106,14 @@ def check_zenodo() -> bool:
 
     print(f"OK Zenodo record found with DOI {doi}")
     return True
+
+
+def report_optional_zenodo_result(message: str) -> bool:
+    if not REQUIRE_ZENODO:
+        print(f"WARN {message}; Zenodo gate optional")
+        return True
+    print(f"FAIL {message}")
+    return False
 
 
 def main() -> int:

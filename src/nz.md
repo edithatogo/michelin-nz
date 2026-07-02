@@ -5,42 +5,62 @@ This page shows only aggregate New Zealand benchmark metrics. It intentionally d
 ```js
 const countryMetrics = await FileAttachment("data/country_metrics.json").json();
 const nz = countryMetrics.find((d) => d.country === "NZL");
-const peers = countryMetrics.filter((d) => d.country !== "NZL").toSorted((a, b) => b.stars_per_100k - a.stars_per_100k);
+const peers = countryMetrics
+  .filter((d) => d.country !== "NZL")
+  .toSorted((a, b) => b.stars_per_100k - a.stars_per_100k);
 ```
 
 ```js
-display(html`<div class="kpi-grid">
-  <div class="metric-card"><span>Aggregate Records</span><strong>${nz.total_restaurants}</strong><small>count only</small></div>
-  <div class="metric-card"><span>Aggregate Stars</span><strong>${nz.total_stars}</strong><small>count only</small></div>
-  <div class="metric-card"><span>Stars per 100k</span><strong>${nz.stars_per_100k.toFixed(3)}</strong><small>population-normalised</small></div>
-  <div class="metric-card"><span>Stars per $10B GDP</span><strong>${nz.stars_per_10b_gdp.toFixed(3)}</strong><small>GDP-normalised</small></div>
-</div>`);
+display(
+  html`<div class="kpi-grid">
+    <div class="metric-card">
+      <span>Aggregate Records</span><strong>${nz.total_restaurants}</strong
+      ><small>count only</small>
+    </div>
+    <div class="metric-card">
+      <span>Aggregate Stars</span><strong>${nz.total_stars}</strong><small>count only</small>
+    </div>
+    <div class="metric-card">
+      <span>Stars per 100k</span><strong>${nz.stars_per_100k.toFixed(3)}</strong
+      ><small>population-normalised</small>
+    </div>
+    <div class="metric-card">
+      <span>Stars per $10B GDP</span><strong>${nz.stars_per_10b_gdp.toFixed(3)}</strong
+      ><small>GDP-normalised</small>
+    </div>
+  </div>`
+);
 ```
 
 ```js
-display(Plot.plot({
-  theme: "dark",
-  height: 360,
-  marginLeft: 120,
-  x: {grid: true, label: "Stars per 100k residents"},
-  y: {label: null},
-  marks: [
-    Plot.ruleX([0]),
-    Plot.barX([nz, ...peers].toSorted((a, b) => a.stars_per_100k - b.stars_per_100k), {
-      x: "stars_per_100k",
-      y: "country_name",
-      fill: (d) => d.country === "NZL" ? "#fbbf24" : "#38bdf8",
-      title: (d) => `${d.country_name}\nStars/100k: ${d.stars_per_100k.toFixed(4)}`
-    }),
-    Plot.text([nz, ...peers], {
-      x: "stars_per_100k",
-      y: "country_name",
-      text: (d) => d.stars_per_100k.toFixed(3),
-      dx: 6,
-      fill: "#e2e8f0"
-    })
-  ]
-}));
+display(
+  Plot.plot({
+    theme: "dark",
+    height: 360,
+    marginLeft: 120,
+    x: { grid: true, label: "Stars per 100k residents" },
+    y: { label: null },
+    marks: [
+      Plot.ruleX([0]),
+      Plot.barX(
+        [nz, ...peers].toSorted((a, b) => a.stars_per_100k - b.stars_per_100k),
+        {
+          x: "stars_per_100k",
+          y: "country_name",
+          fill: (d) => (d.country === "NZL" ? "#fbbf24" : "#38bdf8"),
+          title: (d) => `${d.country_name}\nStars/100k: ${d.stars_per_100k.toFixed(4)}`
+        }
+      ),
+      Plot.text([nz, ...peers], {
+        x: "stars_per_100k",
+        y: "country_name",
+        text: (d) => d.stars_per_100k.toFixed(3),
+        dx: 6,
+        fill: "#e2e8f0"
+      })
+    ]
+  })
+);
 ```
 
 ## Interpretation Notes

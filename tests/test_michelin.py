@@ -1,9 +1,11 @@
 # ruff: noqa
 import io
+import math
 import os
 import sys
 
 import polars as pl
+import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
@@ -85,6 +87,55 @@ def test_build_country_metrics_contains_only_aggregate_columns():
     assert "name" not in df.columns
     assert "lat" not in df.columns
     assert "lng" not in df.columns
+
+
+def test_mojo_metric_backend_matches_python():
+    """Verify the experimental Mojo metrics backend matches the Python calculation."""
+    population = 5228100.0
+    gdp = 253000000000.0
+    total_stars = 11.0
+
+    python_metrics = michelin.calculate_derived_metrics_python(population, gdp, total_stars)
+    mojo_metrics = michelin.calculate_derived_metrics_mojo(population, gdp, total_stars)
+
+    assert math.isclose(mojo_metrics.stars_per_100k, python_metrics.stars_per_100k)
+    assert math.isclose(mojo_metrics.gdp_per_capita, python_metrics.gdp_per_capita)
+    assert math.isclose(mojo_metrics.stars_per_10b_gdp, python_metrics.stars_per_10b_gdp)
+
+
+def test_build_country_metrics_can_use_mojo_backend(monkeypatch):
+    """Verify the data loader can use Mojo for derived metric calculations."""
+    monkeypatch.setenv("MICHELIN_METRICS_BACKEND", "mojo")
+    monkeypatch.setattr(
+        michelin,
+        "get_world_bank_data",
+        lambda: pl.DataFrame(
+            [
+                {
+                    "country": "NZL",
+                    "country_name": "New Zealand",
+                    "population": 5228100.0,
+                    "gdp": 253000000000.0,
+                },
+            ],
+        ),
+    )
+    monkeypatch.setattr(
+        michelin,
+        "get_aggregate_indicator_inputs",
+        lambda: pl.DataFrame(
+            [{"country": "NZL", "total_restaurants": 5, "total_stars": 11}],
+        ),
+    )
+
+    df = michelin.build_country_metrics()
+    expected = michelin.calculate_derived_metrics_python(5228100.0, 253000000000.0, 11.0)
+
+    assert df.height == 1
+    assert df["country"][0] == "NZL"
+    assert df["stars_per_100k"][0] == pytest.approx(expected.stars_per_100k)
+    assert df["gdp_per_capita"][0] == pytest.approx(expected.gdp_per_capita)
+    assert df["stars_per_10b_gdp"][0] == pytest.approx(expected.stars_per_10b_gdp)
 
 
 def test_main_execution(monkeypatch):

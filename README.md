@@ -10,10 +10,10 @@ pinned: false
 # Michelin Star Per-Capita Dashboard
 
 [![Verify Status](https://github.com/edithatogo/michelin-nz/actions/workflows/verify.yml/badge.svg)](https://github.com/edithatogo/michelin-nz/actions/workflows/verify.yml)
-[![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-yellow)](https://huggingface.co/spaces/edithatogo/michelin-nz) 
+[![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-yellow)](https://huggingface.co/spaces/edithatogo/michelin-nz)
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--5364--1650-green.svg)](https://orcid.org/0000-0002-5364-1650)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue)](https://www.python.org/)
+[![Python Version](https://img.shields.io/badge/Python-3.14-blue)](https://www.python.org/)
 
 A static Observable dashboard for gastronomy data analysis that visualizes aggregate Michelin Guide-style indicators alongside population, GDP, and geographic context.
 
@@ -29,7 +29,8 @@ Repository: [edithatogo/michelin-nz](https://github.com/edithatogo/michelin-nz)
 >
 > World Bank indicators are reused from World Bank Open Data and require source attribution under the World Bank dataset terms.
 
-To cite this repository in academic or journalistic publications, please refer to [CITATION.cff](file:///Volumes/PortableSSD/GitHub/michelin-nz/CITATION.cff) or use:
+To cite this repository in academic or journalistic publications, please refer to [CITATION.cff](CITATION.cff) or use:
+
 ```bibtex
 @software{michelin_nz_dashboard_2026,
   author = {Mordaunt, Dylan A},
@@ -43,9 +44,10 @@ To cite this repository in academic or journalistic publications, please refer t
 
 ## 🗄️ Zenodo Archive Linkage
 
-No Zenodo DOI has been minted yet. The repository includes `.zenodo.json` metadata so Zenodo can create a DOI after the GitHub integration is enabled.
+No Zenodo DOI has been minted yet. The repository includes `.zenodo.json` metadata so Zenodo can create a DOI after the GitHub integration is enabled. The scheduled external deployment workflow treats Zenodo as a strict gate, so it will fail until that DOI-bearing record exists.
 
 To activate permanent DOI minting for releases:
+
 1. Log into your account on [Zenodo](https://zenodo.org/) using your GitHub credentials.
 2. Go to your **GitHub Settings** panel on Zenodo and toggle the switch for `edithatogo/michelin-nz` to **On**.
 3. Create a new GitHub Release/Tag. Zenodo will automatically mint a permanent DOI using the metadata in `.zenodo.json`.
@@ -67,24 +69,39 @@ See [Release Checklist](docs/release-checklist.md) before publishing DOI-bearing
 ## 🛠️ Installation & Local Development
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/edithatogo/michelin-nz.git
    cd michelin-nz
    ```
 
-2. **Setup Python Virtual Environment:**
+2. **Install Pixi:**
+
    ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install polars requests pyarrow pytest pytest-cov hypothesis ruff basedpyright
+   curl -fsSL https://pixi.sh/install.sh | bash
    ```
 
 3. **Install Node Packages:**
+
    ```bash
    npm install
    ```
 
-4. **Run Local Dev Server:**
+4. **Run Strict Local Gates:**
+
+   ```bash
+   pixi run python --version
+   pixi run mojo-version
+   pixi run format-check
+   pixi run lint
+   pixi run typecheck
+   pixi run pytest --cov=src/data --cov-fail-under=85
+   npm run lint
+   npm run format:check
+   npm run audit
+   ```
+
+5. **Run Local Dev Server:**
    ```bash
    npm run dev
    ```
@@ -95,7 +112,7 @@ See [Release Checklist](docs/release-checklist.md) before publishing DOI-bearing
 ## 📂 Project Structure
 
 - `src/` - Observable Framework markdown and styles.
-- `src/data/` - Build-time aggregate metric loaders (`michelin.parquet.sh`, `michelin.py`).
+- `src/data/` - Build-time aggregate metric loaders and Mojo-derived metric code (`michelin.parquet.sh`, `michelin.py`, `metrics.mojo`).
 - `conductor/` - Conductor project setup, specs, and workflow guidelines.
 
 ---
@@ -108,6 +125,6 @@ We welcome community contributions for methodology, aggregate source documentati
 
 ## 📄 License & Citation
 
-This project's source code is licensed under the MIT License. See [LICENSE](file:///Volumes/PortableSSD/GitHub/michelin-nz/LICENSE) for details. Third-party data, names, marks, and ratings remain subject to their original owners' terms.
+This project's source code is licensed under the MIT License. See [LICENSE](LICENSE) for details. Third-party data, names, marks, and ratings remain subject to their original owners' terms.
 
-To cite this project, please refer to [CITATION.cff](file:///Volumes/PortableSSD/GitHub/michelin-nz/CITATION.cff).
+To cite this project, please refer to [CITATION.cff](CITATION.cff).
