@@ -5,10 +5,12 @@ Choose the country set, row grouping, and measure to inspect the compiled dashbo
 ```js
 const countryMetrics = await FileAttachment("data/country_metrics.json").json();
 
-const countryOptions = [
-  "All",
-  ...countryMetrics.map((d) => d.country_name).sort((a, b) => a.localeCompare(b))
-];
+const starCountryNames = countryMetrics
+  .filter((d) => d.total_stars > 0)
+  .map((d) => d.country_name)
+  .sort((a, b) => a.localeCompare(b));
+
+const countryOptions = ["All", ...starCountryNames];
 const selectedCountries = view(
   Inputs.checkbox(countryOptions, {
     label: "Countries",
@@ -16,47 +18,38 @@ const selectedCountries = view(
   })
 );
 
-const rowDimension = view(
-  Inputs.select(
-    [
-      ["country_name", "Country"],
-      ["country", "Country code"],
-      ["coverage_bucket", "Coverage bucket"]
-    ],
-    { label: "Rows", value: "country_name" }
-  )
-);
+const rowOptions = new Map([
+  ["country_name", "Country"],
+  ["country", "Country code"],
+  ["coverage_bucket", "Coverage bucket"]
+]);
 
-const measure = view(
-  Inputs.select(
-    [
-      ["total_stars", "Total stars"],
-      ["total_restaurants", "Total aggregate records"],
-      ["stars_per_100k", "Stars per 100k residents"],
-      ["stars_per_10b_gdp", "Stars per $10B GDP"],
-      ["gdp_per_capita", "GDP per capita"],
-      ["population", "Population"],
-      ["gdp", "GDP current USD"]
-    ],
-    { label: "Measure", value: "stars_per_100k" }
-  )
-);
+const rowDimension = view(Inputs.select(rowOptions, { label: "Rows", value: "country_name" }));
 
-const aggregation = view(
-  Inputs.select(
-    [
-      ["sum", "Sum"],
-      ["mean", "Average"],
-      ["max", "Maximum"]
-    ],
-    { label: "Aggregation", value: "sum" }
-  )
-);
+const measureOptions = new Map([
+  ["total_stars", "Total stars"],
+  ["total_restaurants", "Total aggregate records"],
+  ["stars_per_100k", "Stars per 100k residents"],
+  ["stars_per_10b_gdp", "Stars per $10B GDP"],
+  ["gdp_per_capita", "GDP per capita"],
+  ["population", "Population"],
+  ["gdp", "GDP current USD"]
+]);
+
+const measure = view(Inputs.select(measureOptions, { label: "Measure", value: "stars_per_100k" }));
+
+const aggregationOptions = new Map([
+  ["sum", "Sum"],
+  ["mean", "Average"],
+  ["max", "Maximum"]
+]);
+
+const aggregation = view(Inputs.select(aggregationOptions, { label: "Aggregation", value: "sum" }));
 ```
 
 ```js
 const selectedCountrySet = new Set(
-  selectedCountries.includes("All") ? countryOptions.filter((d) => d !== "All") : selectedCountries
+  selectedCountries.includes("All") ? starCountryNames : selectedCountries
 );
 
 const metricRows = countryMetrics
