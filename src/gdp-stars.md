@@ -13,31 +13,27 @@ const measureOptions = new Map([
   ["gdp_per_capita", "GDP per capita"]
 ]);
 
-const xMeasure = view(
-  Inputs.select(
-    [
-      ["gdp_per_capita", "GDP per capita"],
-      ["population", "Population"],
-      ["gdp", "GDP current USD"]
-    ],
-    { label: "X axis", value: "gdp_per_capita" }
-  )
-);
+const xMeasureOptions = new Map([
+  ["gdp_per_capita", "GDP per capita"],
+  ["population", "Population"],
+  ["gdp", "GDP current USD"]
+]);
+
+const starCountries = countryMetrics.filter((d) => d.total_stars > 0).map((d) => d.country_name);
+
+const xMeasure = view(Inputs.select(xMeasureOptions, { label: "X axis", value: "gdp_per_capita" }));
 const yMeasure = view(
-  Inputs.select(Array.from(measureOptions), {
+  Inputs.select(measureOptions, {
     label: "Y axis",
     value: "stars_per_100k"
   })
 );
 const minStars = view(Inputs.range([1, 12], { step: 1, label: "Minimum total stars", value: 1 }));
 const countries = view(
-  Inputs.checkbox(
-    countryMetrics.map((d) => d.country_name),
-    {
-      label: "Countries",
-      value: countryMetrics.map((d) => d.country_name)
-    }
-  )
+  Inputs.checkbox(starCountries, {
+    label: "Countries",
+    value: starCountries
+  })
 );
 ```
 
