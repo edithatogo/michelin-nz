@@ -2,6 +2,10 @@
 
 This page shows only aggregate New Zealand benchmark metrics. It intentionally does not publish individual restaurant names, reviews, coordinates, or row-level source records.
 
+The comparison is a compact peer benchmark: New Zealand is highlighted against the current
+aggregate country set so population-normalised and GDP-normalised intensity can be read without
+exposing restricted guide-level detail.
+
 ```js
 const countryMetrics = await FileAttachment("data/country_metrics.json").json();
 const nz = countryMetrics.find((d) => d.country === "NZL");
