@@ -4,6 +4,8 @@ This page documents the datasource ledger and compiled aggregate records for the
 
 The repository license covers dashboard code and project-authored documentation. World Bank indicators require World Bank attribution. Michelin Guide names, distinctions, ratings, text, branding, and related database rights are not open data. This public dashboard intentionally avoids redistributing individual Michelin-derived records, reviews, coordinates, or a row-level guide-like database.
 
+The aggregate country ledger is a repo-local 2026 snapshot derived from a secondary country-ranking table that cites the Michelin restaurant search. It is used as a coverage baseline until each country can be reconciled directly against official Michelin guide pages. New Zealand remains a local benchmark row and is not represented as an official Michelin Guide country.
+
 ```js
 // Load dynamic database version indicators
 const dataVersion = await FileAttachment("data/version.json").json();

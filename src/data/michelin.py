@@ -14,6 +14,16 @@ GDP_SCALE = 10000000000
 MOJO_METRIC_FIELD_COUNT = 3
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MOJO_METRICS_PATH = REPO_ROOT / "src" / "data" / "metrics.mojo"
+AGGREGATE_COUNTRY_LEDGER_PATH = REPO_ROOT / "src" / "data" / "aggregate_country_ledger.csv"
+AGGREGATE_INPUT_COLUMNS = ["country", "total_restaurants", "total_stars"]
+RESTRICTED_PUBLIC_FIELDS = {
+    "address",
+    "booking_url",
+    "latitude",
+    "longitude",
+    "name",
+    "review_text",
+}
 
 # Define cache dir
 CACHE_DIR = os.path.join(os.path.dirname(__file__), ".cache")
@@ -153,29 +163,84 @@ def get_world_bank_data() -> pl.DataFrame:
 
 def get_aggregate_indicator_inputs() -> pl.DataFrame:
     """Returns aggregate country-level indicator inputs without row-level records."""
-    return pl.DataFrame(
+    return get_aggregate_country_ledger().select(AGGREGATE_INPUT_COLUMNS)
+
+
+def get_aggregate_country_ledger() -> pl.DataFrame:
+    """Load and validate the repo-local aggregate country coverage ledger."""
+    ledger = pl.read_csv(AGGREGATE_COUNTRY_LEDGER_PATH)
+    restricted_columns = RESTRICTED_PUBLIC_FIELDS.intersection(ledger.columns)
+    if restricted_columns:
+        columns = ", ".join(sorted(restricted_columns))
+        raise ValueError(f"Coverage ledger contains restricted row-level fields: {columns}")
+
+    required_columns = {
+        "country",
+        "country_name",
+        "total_restaurants",
+        "total_stars",
+        "source_confidence",
+        "guide_geography",
+        "source_url",
+        "accessed_date",
+        "redistribution_note",
+        "population_fallback",
+        "gdp_fallback",
+    }
+    missing_columns = required_columns.difference(ledger.columns)
+    if missing_columns:
+        columns = ", ".join(sorted(missing_columns))
+        raise ValueError(f"Coverage ledger is missing required columns: {columns}")
+
+    duplicate_codes = (
+        ledger.group_by("country").len().filter(pl.col("len") > 1).get_column("country").to_list()
+    )
+    if duplicate_codes:
+        codes = ", ".join(str(code) for code in duplicate_codes)
+        raise ValueError(f"Coverage ledger contains duplicate country codes: {codes}")
+
+    return ledger.with_columns(
         [
-            {"country": "CHE", "total_restaurants": 1, "total_stars": 3},
-            {"country": "FRA", "total_restaurants": 2, "total_stars": 6},
-            {"country": "JPN", "total_restaurants": 2, "total_stars": 6},
-            {"country": "NZL", "total_restaurants": 5, "total_stars": 11},
-            {"country": "USA", "total_restaurants": 2, "total_stars": 6},
+            pl.col("total_restaurants").cast(pl.Int64),
+            pl.col("total_stars").cast(pl.Int64),
+            pl.col("population_fallback").cast(pl.Float64),
+            pl.col("gdp_fallback").cast(pl.Float64),
         ],
     )
 
 
 def build_country_metrics() -> pl.DataFrame:
     """Builds country-level per-capita and per-GDP aggregate metrics."""
-    df_aggregate_inputs = get_aggregate_indicator_inputs()
+    df_ledger = get_aggregate_country_ledger()
+    df_aggregate_inputs = df_ledger.select(
+        [
+            "country",
+            "country_name",
+            "total_restaurants",
+            "total_stars",
+            "population_fallback",
+            "gdp_fallback",
+        ],
+    )
     df_demographics = get_world_bank_data()
 
-    df_merged = df_demographics.join(df_aggregate_inputs, on="country", how="inner")
+    df_merged = df_aggregate_inputs.join(df_demographics, on="country", how="left")
     df_merged = df_merged.with_columns(
         [
             pl.col("total_restaurants").fill_null(0).cast(pl.Int64),
             pl.col("total_stars").fill_null(0).cast(pl.Int64),
+            pl.coalesce([pl.col("population"), pl.col("population_fallback")]).alias(
+                "population",
+            ),
+            pl.coalesce([pl.col("gdp"), pl.col("gdp_fallback")]).alias("gdp"),
         ],
     )
+    missing_demographics = df_merged.filter(
+        pl.col("population").is_null() | pl.col("gdp").is_null(),
+    )
+    if not missing_demographics.is_empty():
+        codes = ", ".join(str(code) for code in missing_demographics.get_column("country"))
+        raise ValueError(f"Missing population or GDP values for coverage ledger rows: {codes}")
 
     if os.environ.get("MICHELIN_METRICS_BACKEND", "python").lower() == "mojo":
         rows: list[dict[str, object]] = []
@@ -214,6 +279,18 @@ def build_country_metrics() -> pl.DataFrame:
 
     return df_merged.filter(
         pl.col("population").is_not_null() & (pl.col("total_stars") > 0),
+    ).select(
+        [
+            "country",
+            "country_name",
+            "population",
+            "gdp",
+            "total_restaurants",
+            "total_stars",
+            "stars_per_100k",
+            "gdp_per_capita",
+            "stars_per_10b_gdp",
+        ],
     )
 
 

@@ -30,6 +30,26 @@ def test_aggregate_indicator_inputs_are_country_level_only():
     assert "lat" not in df.columns
     assert "lng" not in df.columns
     assert df["total_stars"].sum() > 0
+    assert df.height > 5
+    assert {"FRA", "JPN", "USA", "TWN", "NZL"}.issubset(set(df["country"].to_list()))
+
+
+def test_aggregate_country_ledger_has_source_metadata():
+    """Verify that coverage rows carry source metadata without row-level fields."""
+    df = michelin.get_aggregate_country_ledger()
+    assert df.height > 50
+    assert {
+        "country",
+        "country_name",
+        "source_confidence",
+        "guide_geography",
+        "source_url",
+        "accessed_date",
+        "redistribution_note",
+    }.issubset(set(df.columns))
+    assert not michelin.RESTRICTED_PUBLIC_FIELDS.intersection(df.columns)
+    assert df["total_restaurants"].sum() > 4000
+    assert df["total_stars"].sum() > 5000
 
 
 def test_world_bank_data_fallback():
@@ -81,9 +101,11 @@ def test_build_country_metrics_contains_only_aggregate_columns():
     df = michelin.build_country_metrics()
     assert isinstance(df, pl.DataFrame)
     assert not df.is_empty()
+    assert df.height > 50
     assert "stars_per_100k" in df.columns
     assert "stars_per_10b_gdp" in df.columns
     assert "gdp_per_capita" in df.columns
+    assert "source_url" not in df.columns
     assert "name" not in df.columns
     assert "lat" not in df.columns
     assert "lng" not in df.columns
@@ -122,9 +144,18 @@ def test_build_country_metrics_can_use_mojo_backend(monkeypatch):
     )
     monkeypatch.setattr(
         michelin,
-        "get_aggregate_indicator_inputs",
+        "get_aggregate_country_ledger",
         lambda: pl.DataFrame(
-            [{"country": "NZL", "total_restaurants": 5, "total_stars": 11}],
+            [
+                {
+                    "country": "NZL",
+                    "country_name": "New Zealand",
+                    "total_restaurants": 5,
+                    "total_stars": 11,
+                    "population_fallback": 5228100.0,
+                    "gdp_fallback": 253000000000.0,
+                },
+            ],
         ),
     )
 
