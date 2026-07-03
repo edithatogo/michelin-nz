@@ -105,6 +105,12 @@ def test_build_country_metrics_contains_only_aggregate_columns():
     assert "stars_per_100k" in df.columns
     assert "stars_per_10b_gdp" in df.columns
     assert "gdp_per_capita" in df.columns
+    assert "one_star_restaurants" in df.columns
+    assert "two_star_restaurants" in df.columns
+    assert "three_star_restaurants" in df.columns
+    assert df["one_star_restaurants"].sum() > 0
+    assert df["two_star_restaurants"].sum() > 0
+    assert df["three_star_restaurants"].sum() > 0
     assert "source_url" not in df.columns
     assert "name" not in df.columns
     assert "lat" not in df.columns
@@ -152,6 +158,9 @@ def test_build_country_metrics_can_use_mojo_backend(monkeypatch):
                     "country_name": "New Zealand",
                     "total_restaurants": 5,
                     "total_stars": 11,
+                    "one_star_restaurants": 0,
+                    "two_star_restaurants": 0,
+                    "three_star_restaurants": 0,
                     "population_fallback": 5228100.0,
                     "gdp_fallback": 253000000000.0,
                 },

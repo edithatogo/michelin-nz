@@ -8,6 +8,7 @@ const pages = [
   { path: "/", text: "Michelin Star Per-Capita Dashboard" },
   { path: "/nz", text: "New Zealand Aggregate", visualSelector: "svg" },
   { path: "/gdp-stars", text: "GDP & Stars Analysis", visualSelector: "svg" },
+  { path: "/explorer", text: "Country Explorer", visualSelector: "svg" },
   { path: "/pivot", text: "Pivot Results", visualSelector: "svg" },
   { path: "/sources", text: "Aggregate Country Metrics" }
 ];

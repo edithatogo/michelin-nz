@@ -16,6 +16,11 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MOJO_METRICS_PATH = REPO_ROOT / "src" / "data" / "metrics.mojo"
 AGGREGATE_COUNTRY_LEDGER_PATH = REPO_ROOT / "src" / "data" / "aggregate_country_ledger.csv"
 AGGREGATE_INPUT_COLUMNS = ["country", "total_restaurants", "total_stars"]
+STAR_TIER_COLUMNS = [
+    "one_star_restaurants",
+    "two_star_restaurants",
+    "three_star_restaurants",
+]
 RESTRICTED_PUBLIC_FIELDS = {
     "address",
     "booking_url",
@@ -179,6 +184,7 @@ def get_aggregate_country_ledger() -> pl.DataFrame:
         "country_name",
         "total_restaurants",
         "total_stars",
+        *STAR_TIER_COLUMNS,
         "source_confidence",
         "guide_geography",
         "source_url",
@@ -203,6 +209,9 @@ def get_aggregate_country_ledger() -> pl.DataFrame:
         [
             pl.col("total_restaurants").cast(pl.Int64),
             pl.col("total_stars").cast(pl.Int64),
+            pl.col("one_star_restaurants").cast(pl.Int64),
+            pl.col("two_star_restaurants").cast(pl.Int64),
+            pl.col("three_star_restaurants").cast(pl.Int64),
             pl.col("population_fallback").cast(pl.Float64),
             pl.col("gdp_fallback").cast(pl.Float64),
         ],
@@ -218,6 +227,7 @@ def build_country_metrics() -> pl.DataFrame:
             "country_name",
             "total_restaurants",
             "total_stars",
+            *STAR_TIER_COLUMNS,
             "population_fallback",
             "gdp_fallback",
         ],
@@ -229,6 +239,9 @@ def build_country_metrics() -> pl.DataFrame:
         [
             pl.col("total_restaurants").fill_null(0).cast(pl.Int64),
             pl.col("total_stars").fill_null(0).cast(pl.Int64),
+            pl.col("one_star_restaurants").fill_null(0).cast(pl.Int64),
+            pl.col("two_star_restaurants").fill_null(0).cast(pl.Int64),
+            pl.col("three_star_restaurants").fill_null(0).cast(pl.Int64),
             pl.coalesce([pl.col("population"), pl.col("population_fallback")]).alias(
                 "population",
             ),
@@ -258,6 +271,9 @@ def build_country_metrics() -> pl.DataFrame:
                     "gdp": row["gdp"],
                     "total_restaurants": row["total_restaurants"],
                     "total_stars": row["total_stars"],
+                    "one_star_restaurants": row["one_star_restaurants"],
+                    "two_star_restaurants": row["two_star_restaurants"],
+                    "three_star_restaurants": row["three_star_restaurants"],
                     "stars_per_100k": metrics.stars_per_100k,
                     "gdp_per_capita": metrics.gdp_per_capita,
                     "stars_per_10b_gdp": metrics.stars_per_10b_gdp,
@@ -287,6 +303,7 @@ def build_country_metrics() -> pl.DataFrame:
             "gdp",
             "total_restaurants",
             "total_stars",
+            *STAR_TIER_COLUMNS,
             "stars_per_100k",
             "gdp_per_capita",
             "stars_per_10b_gdp",

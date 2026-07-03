@@ -91,6 +91,7 @@ display(
 
 <div class="dashboard-grid">
   <a class="nav-card" href="./pivot"><strong>Pivot Table</strong><span>Filter countries, choose measures, and change aggregations.</span></a>
+  <a class="nav-card" href="./explorer"><strong>Country Explorer</strong><span>Sort and filter countries by star tier, metric, and row count.</span></a>
   <a class="nav-card" href="./gdp-stars"><strong>GDP Analysis</strong><span>Compare density against GDP per capita and economic scale.</span></a>
   <a class="nav-card" href="./nz"><strong>NZ Aggregate</strong><span>Review New Zealand's aggregate benchmark metrics.</span></a>
   <a class="nav-card" href="./sources"><strong>Sources</strong><span>Review licensing, provenance, and aggregate metric tables.</span></a>

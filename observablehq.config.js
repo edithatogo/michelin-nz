@@ -15,6 +15,10 @@ export default {
       path: "/gdp-stars"
     },
     {
+      name: "Country Explorer",
+      path: "/explorer"
+    },
+    {
       name: "Pivot Table",
       path: "/pivot"
     },
