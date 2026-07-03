@@ -76,6 +76,7 @@ const filteredRows = countryMetrics
 
 const visibleRows = displayScope === "all" ? filteredRows : filteredRows.slice(0, rowLimit);
 const chartRows = visibleRows;
+const chartDomain = chartRows.map((d) => d.country_name);
 ```
 
 ```js
@@ -111,7 +112,7 @@ display(
         label: metricLabels[metric],
         type: metric === "population" || metric === "gdp" ? "log" : "linear"
       },
-      y: { label: null },
+      y: { label: null, domain: chartDomain },
       marks: [
         Plot.ruleX([0]),
         Plot.barX(chartRows, {
