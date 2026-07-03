@@ -16,9 +16,15 @@ const topDensity = countryMetrics.toSorted((a, b) => b.stars_per_100k - a.stars_
 const topGdpEfficiency = countryMetrics.toSorted(
   (a, b) => b.stars_per_10b_gdp - a.stars_per_10b_gdp
 )[0];
+const overviewRowSet = new Set(
+  countryMetrics
+    .toSorted((a, b) => b.stars_per_100k - a.stars_per_100k)
+    .slice(0, 20)
+    .map((d) => d.country)
+);
+overviewRowSet.add("NZL");
 const overviewRows = countryMetrics
-  .toSorted((a, b) => b.stars_per_100k - a.stars_per_100k)
-  .slice(0, 20)
+  .filter((d) => overviewRowSet.has(d.country))
   .toSorted((a, b) => a.stars_per_100k - b.stars_per_100k);
 ```
 
