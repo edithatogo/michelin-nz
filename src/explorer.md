@@ -75,7 +75,7 @@ const filteredRows = countryMetrics
   });
 
 const visibleRows = displayScope === "all" ? filteredRows : filteredRows.slice(0, rowLimit);
-const chartRows = visibleRows.toSorted((a, b) => Number(a[metric] ?? 0) - Number(b[metric] ?? 0));
+const chartRows = visibleRows;
 ```
 
 ```js
