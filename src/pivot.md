@@ -14,7 +14,7 @@ const countryOptions = ["All", ...starCountryNames];
 const selectedCountries = view(
   Inputs.checkbox(countryOptions, {
     label: "Countries",
-    value: countryOptions
+    value: ["All"]
   })
 );
 
@@ -45,6 +45,7 @@ const aggregationOptions = new Map([
 ]);
 
 const aggregation = view(Inputs.select(aggregationOptions, { label: "Aggregation", value: "sum" }));
+const rowLimit = view(Inputs.range([10, 52], { step: 1, label: "Rows shown", value: 25 }));
 ```
 
 ```js
@@ -107,36 +108,41 @@ const groupedRows = Array.from(
     )
   })
 ).sort((a, b) => (b.selected_measure ?? -Infinity) - (a.selected_measure ?? -Infinity));
+
+const visibleGroupedRows = groupedRows.slice(0, rowLimit);
 ```
 
 ```js
 display(
-  Plot.plot({
-    theme: "dark",
-    marginLeft: 160,
-    height: Math.max(260, groupedRows.length * 42),
-    x: { grid: true, label: measure },
-    y: { label: rowDimension },
-    marks: [
-      Plot.ruleX([0]),
-      Plot.barX(groupedRows, {
-        x: "selected_measure",
-        y: rowDimension,
-        fill: "#64b5f6",
-        title: (d) =>
-          `${d[rowDimension]}\n${measure}: ${Number(d.selected_measure ?? 0).toLocaleString(undefined, { maximumFractionDigits: 3 })}`
-      }),
-      Plot.text(groupedRows, {
-        x: "selected_measure",
-        y: rowDimension,
-        text: (d) =>
-          Number(d.selected_measure ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 }),
-        dx: 6,
-        fill: "#f8fafc",
-        textAnchor: "start"
-      })
-    ]
-  })
+  html`<div class="chart-frame">
+    ${Plot.plot({
+      theme: "dark",
+      marginLeft: 170,
+      height: Math.max(420, visibleGroupedRows.length * 34),
+      width: 1100,
+      x: { grid: true, label: measure },
+      y: { label: rowDimension },
+      marks: [
+        Plot.ruleX([0]),
+        Plot.barX(visibleGroupedRows, {
+          x: "selected_measure",
+          y: rowDimension,
+          fill: "#64b5f6",
+          title: (d) =>
+            `${d[rowDimension]}\n${measure}: ${Number(d.selected_measure ?? 0).toLocaleString(undefined, { maximumFractionDigits: 3 })}`
+        }),
+        Plot.text(visibleGroupedRows, {
+          x: "selected_measure",
+          y: rowDimension,
+          text: (d) =>
+            Number(d.selected_measure ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 }),
+          dx: 6,
+          fill: "#f8fafc",
+          textAnchor: "start"
+        })
+      ]
+    })}
+  </div>`
 );
 ```
 
@@ -144,7 +150,7 @@ display(
 
 ```js
 display(
-  Inputs.table(groupedRows, {
+  Inputs.table(visibleGroupedRows, {
     columns: [
       rowDimension,
       "records",

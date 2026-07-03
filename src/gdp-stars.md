@@ -20,6 +20,10 @@ const xMeasureOptions = new Map([
 ]);
 
 const starCountries = countryMetrics.filter((d) => d.total_stars > 0).map((d) => d.country_name);
+const defaultCountries = countryMetrics
+  .toSorted((a, b) => b.total_stars - a.total_stars)
+  .slice(0, 25)
+  .map((d) => d.country_name);
 
 const xMeasure = view(Inputs.select(xMeasureOptions, { label: "X axis", value: "gdp_per_capita" }));
 const yMeasure = view(
@@ -28,11 +32,11 @@ const yMeasure = view(
     value: "stars_per_100k"
   })
 );
-const minStars = view(Inputs.range([1, 12], { step: 1, label: "Minimum total stars", value: 1 }));
+const minStars = view(Inputs.range([1, 100], { step: 1, label: "Minimum total stars", value: 10 }));
 const countries = view(
   Inputs.checkbox(starCountries, {
     label: "Countries",
-    value: starCountries
+    value: defaultCountries
   })
 );
 ```
@@ -63,44 +67,47 @@ display(
 
 ```js
 display(
-  Plot.plot({
-    grid: true,
-    theme: "dark",
-    height: 460,
-    x: {
-      label: xMeasure,
-      type:
-        xMeasure === "population" || xMeasure === "gdp" || xMeasure === "gdp_per_capita"
-          ? "log"
-          : "linear"
-    },
-    y: {
-      label: yMeasure,
-      zero: true
-    },
-    color: { legend: true, label: "Country" },
-    marks: [
-      Plot.ruleY([0]),
-      Plot.dot(queryResults, {
-        x: xMeasure,
-        y: yMeasure,
-        fill: "country_name",
-        r: (d) => Math.max(5, Math.sqrt(d.total_stars) * 4),
-        title: (d) =>
-          `${d.country_name}\n${yMeasure}: ${Number(d[yMeasure]).toLocaleString(undefined, { maximumFractionDigits: 4 })}\nStars: ${d.total_stars}\nRecords: ${d.total_restaurants}`
-      }),
-      Plot.text(queryResults, {
-        x: xMeasure,
-        y: yMeasure,
-        text: "country",
-        dy: -12,
-        fontSize: 11,
-        fill: "#f8fafc",
-        stroke: "#020617",
-        strokeWidth: 3
-      })
-    ]
-  })
+  html`<div class="chart-frame">
+    ${Plot.plot({
+      grid: true,
+      theme: "dark",
+      height: 620,
+      width: 1100,
+      x: {
+        label: xMeasure,
+        type:
+          xMeasure === "population" || xMeasure === "gdp" || xMeasure === "gdp_per_capita"
+            ? "log"
+            : "linear"
+      },
+      y: {
+        label: yMeasure,
+        zero: true
+      },
+      color: { legend: true, label: "Country" },
+      marks: [
+        Plot.ruleY([0]),
+        Plot.dot(queryResults, {
+          x: xMeasure,
+          y: yMeasure,
+          fill: "country_name",
+          r: (d) => Math.max(5, Math.sqrt(d.total_stars) * 4),
+          title: (d) =>
+            `${d.country_name}\n${yMeasure}: ${Number(d[yMeasure]).toLocaleString(undefined, { maximumFractionDigits: 4 })}\nStars: ${d.total_stars}\nRecords: ${d.total_restaurants}`
+        }),
+        Plot.text(queryResults, {
+          x: xMeasure,
+          y: yMeasure,
+          text: "country",
+          dy: -12,
+          fontSize: 11,
+          fill: "#f8fafc",
+          stroke: "#020617",
+          strokeWidth: 3
+        })
+      ]
+    })}
+  </div>`
 );
 ```
 

@@ -119,6 +119,17 @@ a {
   color: #e2e8f0;
 }
 
+.chart-frame {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.25rem;
+}
+
+.chart-frame svg {
+  max-width: none;
+}
+
 .nav-card {
   display: flex;
   flex-direction: column;

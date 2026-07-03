@@ -1,6 +1,6 @@
 # Michelin Star Per-Capita Dashboard
 
-This dashboard compares a small, explicitly curated set of aggregate gastronomy indicators against country population and GDP. It is useful for testing methodology and interactive analysis, but it is not a complete Michelin Guide database.
+This dashboard compares aggregate gastronomy indicators against country population and GDP. It is useful for testing methodology and interactive analysis, but it is not a complete Michelin Guide database.
 
 ```js
 const countryMetrics = await FileAttachment("data/country_metrics.json").json();
@@ -16,6 +16,10 @@ const topDensity = countryMetrics.toSorted((a, b) => b.stars_per_100k - a.stars_
 const topGdpEfficiency = countryMetrics.toSorted(
   (a, b) => b.stars_per_10b_gdp - a.stars_per_10b_gdp
 )[0];
+const overviewRows = countryMetrics
+  .toSorted((a, b) => b.stars_per_100k - a.stars_per_100k)
+  .slice(0, 20)
+  .toSorted((a, b) => a.stars_per_100k - b.stars_per_100k);
 ```
 
 ```js
@@ -55,33 +59,33 @@ display(
 
 ```js
 display(
-  Plot.plot({
-    theme: "dark",
-    height: 320,
-    marginLeft: 120,
-    x: { grid: true, label: "Stars per 100k residents" },
-    y: { label: null },
-    marks: [
-      Plot.ruleX([0]),
-      Plot.barX(
-        countryMetrics.toSorted((a, b) => a.stars_per_100k - b.stars_per_100k),
-        {
+  html`<div class="chart-frame">
+    ${Plot.plot({
+      theme: "dark",
+      height: 620,
+      marginLeft: 150,
+      width: 1100,
+      x: { grid: true, label: "Stars per 100k residents" },
+      y: { label: null },
+      marks: [
+        Plot.ruleX([0]),
+        Plot.barX(overviewRows, {
           x: "stars_per_100k",
           y: "country_name",
           fill: "#38bdf8",
           title: (d) =>
             `${d.country_name}\nStars: ${d.total_stars}\nRestaurants: ${d.total_restaurants}\nStars/100k: ${d.stars_per_100k.toFixed(3)}`
-        }
-      ),
-      Plot.text(countryMetrics, {
-        x: "stars_per_100k",
-        y: "country_name",
-        text: (d) => d.stars_per_100k.toFixed(3),
-        dx: 6,
-        fill: "#e2e8f0"
-      })
-    ]
-  })
+        }),
+        Plot.text(overviewRows, {
+          x: "stars_per_100k",
+          y: "country_name",
+          text: (d) => d.stars_per_100k.toFixed(3),
+          dx: 6,
+          fill: "#e2e8f0"
+        })
+      ]
+    })}
+  </div>`
 );
 ```
 
