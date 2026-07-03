@@ -2,6 +2,8 @@
 
 Filter the aggregate country dataset by star tier, displayed countries, metric, and sort order.
 
+## Controls
+
 ```js
 const countryMetrics = await FileAttachment("data/country_metrics.json").json();
 
@@ -56,7 +58,7 @@ const minTierRestaurants = view(
   Inputs.range([1, 100], {
     step: 1,
     label: "Minimum tier restaurants",
-    value: tierField === "total_restaurants" ? 10 : 1
+    value: 10
   })
 );
 const rowLimit = view(Inputs.range([10, 52], { step: 1, label: "Rows shown", value: 25 }));

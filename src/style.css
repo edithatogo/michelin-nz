@@ -130,6 +130,25 @@ a {
   max-width: none;
 }
 
+.observablehq label {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.observablehq select,
+.observablehq input[type="number"] {
+  min-height: 2rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: #020617;
+  color: var(--theme-foreground);
+}
+
+.observablehq input[type="range"] {
+  accent-color: var(--theme-accent-blue);
+}
+
 .nav-card {
   display: flex;
   flex-direction: column;
