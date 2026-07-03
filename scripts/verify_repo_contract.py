@@ -23,6 +23,8 @@ REQUIRED_FILES = [
     "conductor/contracts.md",
     "conductor/delivery-alignment.md",
     "src/data/metrics.mojo",
+    "src/data/aggregate_country_ledger.csv",
+    "src/data/official_michelin_guide_coverage.csv",
 ]
 
 
@@ -135,6 +137,22 @@ def run_conductor_contract_checks():
     return True
 
 
+def run_official_coverage_checks():
+    print("Running official Michelin coverage reconciliation checks...")
+    res = subprocess.run(
+        ["pixi", "run", "official-coverage"],
+        capture_output=True,
+        check=False,
+        text=True,
+    )
+    if res.returncode != 0:
+        print("FAIL Official coverage reconciliation failed:")
+        print(res.stderr or res.stdout)
+        return False
+    print("OK Official coverage reconciliation passed.")
+    return True
+
+
 def verify_external_deployments():
     print("Validating Hugging Face Spaces status...")
     url = "https://huggingface.co/spaces/edithatogo/michelin-nz"
@@ -163,6 +181,7 @@ def main():
     success &= run_linters()
     success &= run_mojo_checks()
     success &= run_conductor_contract_checks()
+    success &= run_official_coverage_checks()
     success &= verify_external_deployments()
 
     print("==================================================")

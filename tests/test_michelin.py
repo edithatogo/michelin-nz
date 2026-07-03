@@ -31,7 +31,7 @@ def test_aggregate_indicator_inputs_are_country_level_only():
     assert "lng" not in df.columns
     assert df["total_stars"].sum() > 0
     assert df.height > 5
-    assert {"FRA", "JPN", "USA", "TWN", "NZL"}.issubset(set(df["country"].to_list()))
+    assert {"FRA", "JPN", "USA", "TWN", "PHL", "NZL"}.issubset(set(df["country"].to_list()))
 
 
 def test_aggregate_country_ledger_has_source_metadata():
