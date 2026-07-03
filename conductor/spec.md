@@ -35,24 +35,36 @@ This document defines the current aggregate-only requirements for the dashboard.
 ## Architecture And Data Flow
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant WB as World Bank API
-    participant AG as Aggregate Inputs
-    participant PY as Data Loader
-    participant AR as Local Archive
-    participant PQ as Parquet Assets
-    participant HF as Hugging Face Spaces
+%%{init: {"flowchart": {"curve": "basis", "nodeSpacing": 55, "rankSpacing": 80}}}%%
+flowchart LR
+    classDef source fill:#e0f2fe,stroke:#0284c7,color:#0f172a
+    classDef process fill:#ede9fe,stroke:#7c3aed,color:#0f172a
+    classDef output fill:#dcfce7,stroke:#16a34a,color:#0f172a
+    classDef deploy fill:#fef3c7,stroke:#d97706,color:#0f172a
 
-    PY->>WB: Request country population and GDP
-    alt API request succeeds
-        WB-->>PY: Return aggregate indicators
-    else API fails
-        AR-->>PY: Load archived aggregate fallback
+    subgraph inputs["Aggregate Inputs"]
+        direction TB
+        WB["World Bank API<br/>Population and GDP"]
+        AR["Local Archive<br/>Fallback indicators"]
+        AG["Curated Aggregate Counts<br/>Country-level star totals"]
     end
 
-    AG-->>PY: Provide aggregate country counts
-    PY->>PY: Calculate per-capita and GDP-normalized ratios
-    PY->>PQ: Write aggregate Parquet and version assets
-    PQ->>HF: Deploy compiled static dashboard
+    DL["Data Loader<br/>Python 3.14 + Polars"]
+    MX["Metric Calculation<br/>Mojo parity backend"]
+    AS["Versioned Assets<br/>Parquet + JSON"]
+    OB["Observable Static Build<br/>Charts, tables, maps"]
+    HF["Hugging Face Spaces<br/>Public dashboard"]
+
+    WB -- "success" --> DL
+    AR -. "fallback" .-> DL
+    AG -- "counts" --> DL
+    DL --> MX
+    MX -- "per-capita + GDP ratios" --> AS
+    AS --> OB
+    OB --> HF
+
+    class WB,AR,AG source
+    class DL,MX process
+    class AS,OB output
+    class HF deploy
 ```
