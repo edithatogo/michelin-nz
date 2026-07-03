@@ -30,8 +30,8 @@
     - [ ] Review pure numeric transformations after data coverage expansion.
     - [ ] Compare Mojo output against Python/Polars for every candidate row.
     - [ ] Keep HTTP, source parsing, and Parquet output in Python until parity is proven.
-- [ ] Task: Document migration boundaries
-    - [ ] Update the tech stack with the current Mojo/Python split.
-    - [ ] Document commands for Mojo formatting, build, and metrics checks.
-    - [ ] Record any remaining blockers or performance tradeoffs in the track notes.
+- [x] Task: Document migration boundaries
+    - [x] Update the tech stack with the current Mojo/Python split.
+    - [x] Document commands for Mojo formatting, build, and metrics checks.
+    - [x] Record remaining migration boundaries in requirements, contracts, and delivery alignment docs.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Further Migration Review' (Protocol in workflow.md)

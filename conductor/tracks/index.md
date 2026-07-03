@@ -8,7 +8,7 @@ This index tracks all developmental phases of the Michelin Star Per-Capita Dashb
 | :--- | :--- | :--- | :--- |
 | `data_coverage_20260703` | Michelin Star Country Coverage and Aggregate Data Completeness | `new` | [data_coverage_20260703/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/data_coverage_20260703/index.md) |
 | `geo_outcomes_20260703` | Global Choropleth and New Zealand Location-Safe Visualisation | `new` | [geo_outcomes_20260703/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/geo_outcomes_20260703/index.md) |
-| `live_quality_score_20260703` | Live Deployment and Repository Quality Scorecard | `new` | [live_quality_score_20260703/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/live_quality_score_20260703/index.md) |
+| `live_quality_score_20260703` | Live Deployment and Repository Quality Scorecard | `in_progress` | [live_quality_score_20260703/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/live_quality_score_20260703/index.md) |
 | `mojo_migration_20260703` | Experimental Mojo Data Processing Migration | `in_progress` | [mojo_migration_20260703/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/tracks/mojo_migration_20260703/index.md) |
 | `bootstrap` | Project Scaffolding & Observable Bootstrapping | `archived` | [bootstrap/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/archive/bootstrap/index.md) |
 | `data_loader` | Data loader Pipeline & Scraping | `archived` | [data_loader/index.md](file:///Volumes/PortableSSD/GitHub/michelin-nz/conductor/archive/data_loader/index.md) |

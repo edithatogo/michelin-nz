@@ -1,6 +1,8 @@
 # Aggregate Gastronomy Indicator Dashboard Specification
 
-This document defines the current aggregate-only requirements for the dashboard.
+This document defines the current aggregate-only requirements for the dashboard. The canonical
+MoSCoW register is [requirements.md](./requirements.md); this specification keeps the core
+product scope and architecture summary close to the original Conductor setup.
 
 ## Requirements
 

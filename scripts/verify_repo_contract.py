@@ -18,6 +18,10 @@ REQUIRED_FILES = [
     "README.md",
     "CONTRIBUTING.md",
     "conductor/spec.md",
+    "conductor/requirements.md",
+    "conductor/design.md",
+    "conductor/contracts.md",
+    "conductor/delivery-alignment.md",
     "src/data/metrics.mojo",
 ]
 
@@ -115,6 +119,22 @@ def run_mojo_checks():
     return True
 
 
+def run_conductor_contract_checks():
+    print("Running Conductor contract checks...")
+    res = subprocess.run(
+        ["pixi", "run", "conductor-contracts"],
+        capture_output=True,
+        check=False,
+        text=True,
+    )
+    if res.returncode != 0:
+        print("FAIL Conductor contract checks failed:")
+        print(res.stderr or res.stdout)
+        return False
+    print("OK Conductor contract checks passed.")
+    return True
+
+
 def verify_external_deployments():
     print("Validating Hugging Face Spaces status...")
     url = "https://huggingface.co/spaces/edithatogo/michelin-nz"
@@ -142,6 +162,7 @@ def main():
     success &= run_tests()
     success &= run_linters()
     success &= run_mojo_checks()
+    success &= run_conductor_contract_checks()
     success &= verify_external_deployments()
 
     print("==================================================")
